@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { Toaster } from 'sonner';
 import { Inter } from "next/font/google";
+import { CartProvider } from "@/components/shared/cart-context";
 import '@/assets/styles/globals.css';
 import { APP_DESCRIPTION, APP_NAME, SERVER_URL } from "@/lib/constants";
 import { ThemeProvider } from "next-themes";
@@ -25,7 +27,10 @@ export default function RootLayout({
       lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider attribute='class' defaultTheme="light" enableSystem disableTransitionOnChange >
-        {children}
+          <CartProvider>
+          {children}
+          <Toaster position="top-center" richColors />
+        </CartProvider>
         </ThemeProvider>
       </body>
     </html>

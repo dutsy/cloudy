@@ -18,7 +18,7 @@ export default async function EmailPasswordPage() {
       
     return (<div>
         <EmailPasswordDemo user={user} />
-        {/* <GoogleLoginDemo user={user} /> */}
+        
 
     </div>);;
 }

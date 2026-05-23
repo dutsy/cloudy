@@ -1,83 +1,162 @@
-'use client' // Required because we are using useCart context
+"use client";
 
 import { Button } from "@/components/ui/button";
 import ModeToggle from "./mode-toggle";
 import Link from "next/link";
-import { EllipsisVertical, ShoppingCart, UserIcon } from "lucide-react";
-import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { useCart } from "@/components/shared/cart-context"; // Import your hook
+import {
+  EllipsisVertical,
+  UserIcon,
+  LayoutDashboard,
+  Soup,
+  LogOut,
+} from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { useUser } from "@/components/shared/user-context";
+import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 
 const Menu = () => {
-    const { itemCount } = useCart(); // Get the live count
+  const { role, user, loading } = useUser();
+  const supabase = getSupabaseBrowserClient();
 
-    return (
-        <div className="flex justify-end gap-3">
-            {/* DESKTOP NAVIGATION */}
-            <nav className="hidden md:flex w-full max-w-xs gap-1 items-center">
-                <ModeToggle />
-                <Button asChild variant='ghost' className="relative">
-                    <Link href='/cart'>
-                        <ShoppingCart className="h-5 w-5" />
-                        <span className="ml-2">Cart</span>
-                        {/* Desktop Badge */}
-                        {itemCount > 0 && (
-                            <span className="absolute -top-1 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-orange-500 text-[10px] font-bold text-white shadow-sm">
-                                {itemCount}
-                            </span>
-                        )}
-                    </Link>
-                </Button>
-                <Button asChild>
-                    <Link href='/sign-in'>
-                        <UserIcon className="mr-2 h-5 w-5" />
-                        Sign In
-                    </Link>
-                </Button>
-            </nav>
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/"; // Fresh start after logout
+  };
 
-            {/* MOBILE NAVIGATION */}
-            <nav className="md:hidden flex items-center">
-                <Sheet>
-                    <SheetTrigger className="align-middle relative p-2">                        
-                        <EllipsisVertical />
-                        {/* Mobile Badge on the three-dot menu so they know items are inside */}
-                        {itemCount > 0 && (
-                            <span className="absolute top-1 right-1 flex h-3 w-3 rounded-full bg-orange-500 border-2 border-background"></span>
-                        )}
-                    </SheetTrigger>
-                    <SheetContent className="flex flex-col items-start gap-4">
-                        <SheetTitle>Menu</SheetTitle>
-                        
-                        <div className="flex items-center gap-2 w-full justify-between">
-                            <span className="text-sm font-medium">Theme</span>
-                            <ModeToggle />
-                        </div>
+  // Helper check: True if user is either a barista (worker) or manager (admin)
+  const isStaff = !loading && (role === "worker" || role === "admin");
 
-                        <Button asChild variant='ghost' className="w-full justify-start relative">
-                            <Link href='/cart'>
-                                <ShoppingCart className="mr-2 h-5 w-5" /> 
-                                Cart
-                                {itemCount > 0 && (
-                                    <span className="ml-2 bg-orange-500 text-white px-2 py-0.5 rounded-full text-[10px]">
-                                        {itemCount} items
-                                    </span>
-                                )}
-                            </Link>
-                        </Button>
+  return (
+    <div className="flex justify-end gap-3">
+      {/* DESKTOP NAVIGATION */}
+      <nav className="hidden md:flex w-full max-w-xs gap-1 items-center">
+        <ModeToggle />
 
-                        <Button asChild className="w-full justify-start">
-                            <Link href='/sign-in'>
-                                <UserIcon className="mr-2 h-5 w-5" />
-                                Sign In
-                            </Link>
-                        </Button>
-                        
-                        <SheetDescription></SheetDescription>
-                    </SheetContent>
-                </Sheet>
-            </nav>
-        </div>
-    );
-}
- 
+        {/* ADMIN TAB */}
+        {!loading && role === "admin" && (
+          <Button
+            asChild
+            variant="ghost"
+            className="text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+          >
+            <Link href="/admin">
+              <LayoutDashboard className="mr-2 h-5 w-5" />
+              Admin
+            </Link>
+          </Button>
+        )}
+
+        {/* KITCHEN TAB - Fixed to use '/kitchen' matching your folder tree */}
+        {isStaff && (
+          <Button
+            asChild
+            variant="ghost"
+            className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+          >
+            <Link href="/kitchen">
+              <Soup className="mr-2 h-5 w-5" />
+              Kitchen
+            </Link>
+          </Button>
+        )}
+
+        <Button asChild variant="ghost">
+          <Link href={user ? "/profile" : "/sign-in"}>
+            <UserIcon className="mr-2 h-5 w-5" />
+            {user ? "Profile" : "Sign In"}
+          </Link>
+        </Button>
+
+        {user && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleSignOut}
+            title="Sign Out"
+          >
+            <LogOut className="h-5 w-5 text-destructive" />
+          </Button>
+        )}
+      </nav>
+
+      {/* MOBILE NAVIGATION */}
+      <nav className="md:hidden flex items-center">
+        <Sheet>
+          <SheetTrigger className="align-middle p-2" asChild>
+            <Button variant="ghost" size="icon">
+              <EllipsisVertical className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent className="flex flex-col items-start gap-4">
+            <SheetTitle>Menu</SheetTitle>
+
+            <div className="flex items-center gap-2 w-full justify-between border-b pb-4">
+              <span className="text-sm font-medium">Theme</span>
+              <ModeToggle />
+            </div>
+
+            {/* Mobile Admin Link */}
+            {!loading && role === "admin" && (
+              <Button
+                asChild
+                variant="secondary"
+                className="w-full justify-start border-l-4 border-orange-500"
+              >
+                <Link href="/admin">
+                  <LayoutDashboard className="mr-2 h-5 w-5 text-orange-500" />
+                  Admin Dashboard
+                </Link>
+              </Button>
+            )}
+
+            {/* Mobile Kitchen Link - Fixed to use '/kitchen' matching your folder tree */}
+            {isStaff && (
+              <Button
+                asChild
+                variant="secondary"
+                className="w-full justify-start border-l-4 border-emerald-500 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+              >
+                <Link href="/kitchen">
+                  <Soup className="mr-2 h-5 w-5 text-emerald-500" />
+                  Kitchen View
+                </Link>
+              </Button>
+            )}
+
+            <Button asChild variant="ghost" className="w-full justify-start">
+              <Link href={user ? "/profile" : "/sign-in"}>
+                <UserIcon className="mr-2 h-5 w-5" />
+                {user ? "Profile" : "Sign In"}
+              </Link>
+            </Button>
+
+            {user && (
+              <Button
+                variant="destructive"
+                className="w-full justify-start mt-auto"
+                onClick={handleSignOut}
+              >
+                <LogOut className="mr-2 h-5 w-5" />
+                Sign Out
+              </Button>
+            )}
+
+            <SheetDescription>
+              {user
+                ? `Logged in as ${user.email}`
+                : "Access your Cloudy account."}
+            </SheetDescription>
+          </SheetContent>
+        </Sheet>
+      </nav>
+    </div>
+  );
+};
+
 export default Menu;

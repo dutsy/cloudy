@@ -14,9 +14,6 @@ interface Product {
 const HomepageClient = ({ initialProducts }: { initialProducts: any[] }) => {
 
   const { items, totalPrice, itemCount, clearCart } = useCart();
-
-  console.log(items.map(item => item.name)+ '\n' + totalPrice + '\n' + itemCount); // here the local storage data do not duplicate items, so i have to check it by quanqtity, but it works fine, and the total price is correct as well, so i will just leave it like this for now, and maybe add a feature to update quantity in the future if i have time
-
   const [activeCategory, setActiveCategory] = useState("food");
 
   const categories = [

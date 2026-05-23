@@ -1,223 +1,227 @@
 "use client";
 
-import { AuthDemoPage } from "@/components/authDemoPage";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 import { User } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Coffee, ArrowRight, Leaf } from "lucide-react"; // Added Leaf for the organic vibe
+import { Button } from "@/components/ui/button";
 
-type EmailPasswordDemoProps = {
-  user: User | null;
-};
+type Mode = "signup" | "signin";
 
-type Mode = "signup" | "signin"
-
-export default function EmailPasswordDemo({ user }: EmailPasswordDemoProps) {
-  const [mode, setMode] = useState("signup");
+export default function SignInPage() {
+  const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("");
-  const supabase = getSupabaseBrowserClient();
-  const [currentUser, setCurrentUser] = useState<User | null>(user);
+  const [isLoading, setIsLoading] = useState(false);
 
-  async function handleSignOut() {
-    await supabase.auth.signOut();
-    setCurrentUser(null);
-    setStatus("Signed out successfully");
-  }
+  const supabase = getSupabaseBrowserClient();
+  const router = useRouter();
 
   useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setCurrentUser(session?.user ?? null);
-      }
-    );
-
-    return () => {
-      listener?.subscription.unsubscribe();
+    const checkUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) router.push("/profile");
     };
-  }, [supabase])
+    checkUser();
+  }, [supabase, router]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setIsLoading(true);
+    setStatus("");
 
-    if (mode == "signup") {
-      const { error, data } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/welcome`,
+    try {
+      if (mode === "signup") {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback?next=/welcome`,
+          },
+        });
+        if (error) throw error;
+        setStatus(
+          "Verification link sent! Please check your inbox to activate your account.",
+        );
+      } else {
+        const { error, data } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) throw error;
+        if (data.user) {
+          setStatus("Success! Entering Cloudy...");
+          router.push("/");
         }
-      });
-      if (error) {
-        setStatus(error.message);
-      } else {
-        setStatus("Check your inbox to confirm the new account.");
       }
-    } else {
-      const { error, data } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) {
-        setStatus(error.message);
-      } else {
-        setStatus("Signed in successfully");
-      }
+    } catch (error: any) {
+      setStatus(
+        error.message || "An unexpected error occurred. Please try again.",
+      );
+    } finally {
+      setIsLoading(false);
     }
   }
 
-   async function handleGoogleLogin() {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-        skipBrowserRedirect: false,
-      },
-    });
+  async function handleGoogleLogin() {
+    setIsLoading(true); // Start the loading state immediately
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          // Ensures the browser follows the link properly
+          skipBrowserRedirect: false,
+        },
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      setStatus(error.message);
+      setIsLoading(false); // Only turn off if there's an error
+    }
   }
 
-
-
   return (
-    <AuthDemoPage
-      title="Email + Password"
-      intro="Classic credentials—users enter details, Supabase secures the rest while getSession + onAuthStateChange keep the UI live."
-      steps={[
-        "Toggle between sign up and sign in.",
-        "Submit to watch the session card refresh instantly.",
-        "Sign out to reset the listener.",
-      ]}
-    >
-      {!currentUser && (
-        <>
-          <form
-            className="relative overflow-hidden rounded-[32px] border border-emerald-500/30 bg-gradient-to-br from-[#05130d] via-[#04100c] to-[#0c2a21] p-8 text-slate-100 shadow-[0_35px_90px_rgba(2,6,23,0.65)]"
-            onSubmit={handleSubmit}
-          >
-            <div
-              className="pointer-events-none absolute -left-4 -top-4 -z-10 h-20 w-28 rounded-full bg-[radial-gradient(circle,_rgba(16,185,129,0.25),_transparent)] blur-lg"
-              aria-hidden="true"
-            />
-            <div
-              className="pointer-events-none absolute -bottom-10 right-2 -z-10 h-28 w-40 rounded-full bg-[linear-gradient(140deg,_rgba(45,212,191,0.32),_rgba(59,130,246,0.12))] blur-xl"
-              aria-hidden="true"
-            />
-            <div className="absolute inset-x-8 top-6 flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.3em] text-emerald-300/80">
-              <span>Primary</span>
-              <span>Flow</span>
-            </div>
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/70">
-                  Credentials
-                </p>
-                <h3 className="text-xl font-semibold text-white">
-                  {mode === "signup" ? "Create an account" : "Welcome back"}
-                </h3>
-              </div>
-              <div className="flex rounded-full border border-white/10 bg-white/[0.07] p-1 text-xs font-semibold text-slate-300">
-                {(["signup", "signin"] as Mode[]).map((option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    aria-pressed={mode === option}
-                    onClick={() => setMode(option)}
-                    className={`rounded-full px-4 py-1 transition ${mode === option
-                      ? "bg-emerald-500/30 text-white shadow shadow-emerald-500/20"
-                      : "text-slate-400"
-                      }`}
-                  >
-                    {option === "signup" ? "Sign up" : "Sign in"}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="mt-6 space-y-4">
-              <label className="block text-sm font-medium text-slate-200">
-                Email
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  required
-                  className="mt-2 w-full rounded-2xl border border-white/10 bg-[#0b1b18] px-3 py-2.5 text-base text-white placeholder-slate-500 shadow-inner shadow-black/30 focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400/30"
-                  placeholder="you@email.com"
-                />
+    <div className="min-h-[80vh] flex items-center justify-center p-4">
+      <div className="w-full max-w-[400px] space-y-8">
+        {/* BRAND SECTION - Updated to Emerald */}
+        <div className="flex flex-col items-center text-center space-y-2">
+          <div className="h-16 w-16 bg-emerald-500/10 rounded-3xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-inner">
+            <Leaf size={36} strokeWidth={1.5} />
+          </div>
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold tracking-tight">Cloudy</h1>
+            <p className="text-sm text-emerald-600/60 dark:text-emerald-400/60 font-medium uppercase tracking-widest text-muted-foreground">
+              Freshly Brewed Community
+            </p>
+          </div>
+        </div>
+
+        {/* AUTH CARD - Updated to Emerald accents */}
+        <div className="bg-card border border-border/50 rounded-[32px] p-8 shadow-2xl relative overflow-hidden">
+          {/* Decorative Glow - Updated to Emerald */}
+          <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 blur-[80px] pointer-events-none" />
+
+          {/* MODE TOGGLE */}
+          <div className="flex bg-muted/50 p-1 rounded-full mb-8">
+            {(["signin", "signup"] as Mode[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => setMode(m)}
+                className={`flex-1 py-2 text-xs font-bold rounded-full transition-all ${
+                  mode === m
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {m === "signin" ? "SIGN IN" : "REGISTER"}
+              </button>
+            ))}
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-4">
+                Email Address
               </label>
-              <label className="block text-sm font-medium text-slate-200">
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="hello@cloudy.com"
+                className="w-full bg-muted/30 border-none rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-4">
                 Password
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  required
-                  minLength={6}
-                  className="mt-2 w-full rounded-2xl border border-white/10 bg-[#0b1b18] px-3 py-2.5 text-base text-white placeholder-slate-500 shadow-inner shadow-black/30 focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400/30"
-                  placeholder="At least 6 characters"
-                />
               </label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full bg-muted/30 border-none rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
+              />
             </div>
-            <button
-              type="submit"
-              className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/30 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:bg-emerald-600/40"
+
+            {/* BUTTON - Updated to Emerald */}
+            <Button
+              disabled={isLoading}
+              className="w-full h-12 rounded-2xl bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white font-bold shadow-lg shadow-emerald-500/20 transition-all mt-4 group"
             >
-              {mode === "signup" ? "Create account" : "Sign in"}
-            </button>
-            {status && (
-              <p className="mt-4 text-sm text-slate-300" role="status" aria-live="polite">
-                {status}
-              </p>
-            )}
-          </form>
-        </>
-      )}
-      
-      <div>
-    
-      {!currentUser && (
-        <>
-          <section className="relative overflow-hidden rounded-[32px] border border-[#5a8dee]/40 bg-gradient-to-br from-[#050a16] via-[#08142b] to-[#0f2446] p-8 text-slate-100 shadow-[0_35px_90px_rgba(2,6,23,0.65)]">
-            <div
-              className="pointer-events-none absolute -right-6 -top-8 -z-10 h-24 w-24 rounded-full bg-[radial-gradient(circle,_rgba(66,133,244,0.25),_rgba(234,67,53,0.06))] blur-xl"
-              aria-hidden="true"
-            />
-            <div
-              className="pointer-events-none absolute bottom-2 right-10 -z-10 h-14 w-20 rounded-full bg-[radial-gradient(circle,_rgba(52,168,83,0.2),_transparent)] blur-lg"
-              aria-hidden="true"
-            />
-            <div
-              className="pointer-events-none absolute -left-10 bottom-4 -z-10 h-20 w-32 rotate-12 rounded-full bg-[linear-gradient(120deg,_rgba(251,188,5,0.18),_rgba(66,133,244,0.12))] blur-lg"
-              aria-hidden="true"
-            />
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0d1f3f] text-2xl font-semibold text-white shadow-lg shadow-blue-900/40 ring-2 ring-[#8ab4ff]/40">
-                  G
+              {isLoading ? (
+                "Brewing..."
+              ) : (
+                <span className="flex items-center justify-center gap-2">
+                  {mode === "signin" ? "Welcome Back" : "Create Account"}
+                  <ArrowRight
+                    size={18}
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
                 </span>
-                <div>
-                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-                    OAuth
-                  </p>
-                  <h3 className="text-xl font-semibold text-white">
-                    Continue with Google
-                  </h3>
-                </div>
+              )}
+            </Button>
+          </form>
+
+          {status && (
+            <p className="mt-4 text-center text-xs text-emerald-600 dark:text-emerald-400 font-medium animate-in fade-in slide-in-from-bottom-1">
+              {status}
+            </p>
+          )}
+        </div>
+
+        {/* SOCIAL LOGIN */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-4 text-muted-foreground/30">
+            <div className="h-[1px] flex-1 bg-current" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+              OR
+            </span>
+            <div className="h-[1px] flex-1 bg-current" />
+          </div>
+
+          <button
+            type="button"
+            disabled={isLoading}
+            onClick={handleGoogleLogin}
+            className="w-full h-12 rounded-2xl border border-border bg-card flex items-center justify-center gap-3 
+             transition-all duration-150 ease-in-out
+             active:scale-[0.96] active:bg-muted
+             hover:bg-muted/50 disabled:opacity-50 disabled:cursor-not-allowed
+             group relative overflow-hidden"
+          >
+            {isLoading ? (
+              // Show this when clicked
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                <span className="text-sm font-medium animate-pulse">
+                  Connecting...
+                </span>
               </div>
-              <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-[#fbbc05] shadow-sm">
-                
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={handleGoogleLogin}
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#1a73e8] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/40 transition hover:bg-[#1662c4]"
-            >
-              Continue with Google
-            </button>
-          </section>
-        </>
-      )}
+            ) : (
+              // Show this normally
+              <>
+                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white ring-1 ring-border shadow-sm">
+                  <span className="text-[12px] font-black text-[#4285F4]">
+                    G
+                  </span>
+                </div>
+                <span className="text-sm font-semibold">
+                  Continue with Google
+                </span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
-    </AuthDemoPage>
+    </div>
   );
 }

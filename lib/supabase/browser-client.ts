@@ -7,7 +7,7 @@ type SupabaseSchema = Record<string, never>;
 
 let client: SupabaseClient<SupabaseSchema> | null = null;
 
-export function getSupabaseBrowserClient(): SupabaseClient<SupabaseSchema> {
+export function getSupabaseBrowserClient(){
   if (client) {
     return client;
   }
@@ -20,7 +20,7 @@ export function getSupabaseBrowserClient(): SupabaseClient<SupabaseSchema> {
       "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY"
     );
   }
-
+  console.log("Connecting to:", supabaseUrl);
   client = createBrowserClient<SupabaseSchema>(supabaseUrl, supabaseAnonKey);
   return client;
 }

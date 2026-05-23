@@ -1,6 +1,5 @@
 import EmailPasswordDemo from './EmailPasswordDemo';
 import { createSupabaseServerClient } from '@/lib/supabase/server-client';
-import GoogleLoginDemo from './googleLoginDemo';
 import { Metadata } from 'next';
 import { title } from 'process';
 

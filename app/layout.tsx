@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Toaster } from 'sonner';
+import { Toaster } from "sonner";
 import { Inter } from "next/font/google";
 import { CartProvider } from "@/components/shared/cart-context";
-import '@/assets/styles/globals.css';
+import { UserProvider } from "@/components/shared/user-context";
+import "@/assets/styles/globals.css";
 import { APP_DESCRIPTION, APP_NAME, SERVER_URL } from "@/lib/constants";
 import { ThemeProvider } from "next-themes";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
@@ -23,14 +24,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
-        <ThemeProvider attribute='class' defaultTheme="light" enableSystem disableTransitionOnChange >
-          <CartProvider>
-          {children}
-          <Toaster position="top-center" richColors />
-        </CartProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <UserProvider>
+            <CartProvider>
+              {children}
+              <Toaster position="top-center" richColors />
+            </CartProvider>
+          </UserProvider>
         </ThemeProvider>
       </body>
     </html>

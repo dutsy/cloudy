@@ -5,9 +5,10 @@ import { LayoutDashboard, Package, BarChart3, Settings } from "lucide-react";
 
 export default function AdminDashboard() {
   const adminLinks = [
-    { title: "Products", href: "/admin/add-product", icon: Package, color: "text-blue-600" },
-    { title: "Analytics", href: "/admin/analytics", icon: BarChart3, color: "text-purple-600" },
+    { title: " Add Product", href: "/admin/add-product", icon: Package, color: "text-blue-600" },
     { title: "Settings", href: "/admin/settings", icon: Settings, color: "text-gray-600" },
+    { title: "Analytics", href: "/admin/analytics", icon: BarChart3, color: "text-purple-600" },
+    
   ];
 
   return (

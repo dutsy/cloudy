@@ -44,7 +44,9 @@ export default function CartPage() {
       }
 
       if (res.ok) {
-        router.push("/welcome"); // Redirect cleanly to your welcome success route page
+        const data = await res.json();
+        console.log("Checkout response status:sddssdfsdfdsfsdf", data.orderNumber);
+        router.push(`/welcome?order=${data.orderNumber}`);
       }
     } catch (err) {
       console.error("Checkout execution failure: ", err);

@@ -9,6 +9,13 @@ const CATEGORIES = [
   { value: "smoke", label: "💨 Smoke" },
 ];
 
+const generateSlug = (name: string) => {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric chars with hyphens
+    .replace(/(^-|-$)+/g, ""); // Remove leading/trailing hyphens
+};
+
 export default function AddProductPage() {
   const supabase = getSupabaseBrowserClient();
   const formRef = useRef<HTMLFormElement>(null);
@@ -46,15 +53,19 @@ export default function AddProductPage() {
 
       // 3. Insert to DB
       const formData = new FormData(formRef.current);
+      const productName = formData.get("name") as string;
+
+      const generatedSlug = generateSlug(productName);
+
       // 5. Insert to DB
       const { error: dbError } = await supabase.from("products").insert({
         name: formData.get("name"),
-        slug: formData.get("slug") || "",
+        slug: generatedSlug,
         category: formData.get("category"),
         brand: formData.get("brand"),
         description: formData.get("description"),
         price: parseFloat((formData.get("price") as string) || "0"),
-        stock: parseInt((formData.get("stock") as string) || "0"),
+        stock: 9999,
         rating: parseFloat((formData.get("rating") as string) || "0"), // Added this
         num_reviews: 0, // Usually starts at 0 for new products
         images: imageUrls,
@@ -66,6 +77,7 @@ export default function AddProductPage() {
       alert("Product added successfully!");
       formRef.current.reset();
       setFiles(null);
+      setFiles(null);
     } catch (err: any) {
       console.error("Submission Error:", err);
       alert("Failed: " + (err.message || "Unknown error occurred"));
@@ -75,80 +87,127 @@ export default function AddProductPage() {
   };
 
   return (
-    <form
-      ref={formRef}
-      onSubmit={handleSubmit}
-      className="space-y-4 max-w-lg mx-auto p-6"
-    >
-      <input
-        name="name"
-        placeholder="Product Name"
-        required
-        className="border p-2 w-full rounded"
-      />
-      <input
-        name="slug"
-        placeholder="Slug (optional)"
-        className="border p-2 w-full rounded"
-      />
+    <div className="flex justify-center w-full">
+      <div className="w-full max-w-2xl">
+        {" "}
+        {/* This 'max-w-2xl' restricts the width */}
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit}
+          className="space-y-6 bg-white p-8 rounded-xl shadow-sm border border-gray-100"
+        >
+          <h2 className="text-2xl font-bold text-gray-800">Add New Product</h2>
+          <div className="space-y-4">
+            {/* Full width always */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Product Name
+              </label>
+              <input
+                name="name"
+                placeholder="e.g. Double Cheeseburger"
+                required
+                className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+              />
+            </div>
 
-      <select name="category" required className="border p-2 w-full rounded">
-        {CATEGORIES.map((cat) => (
-          <option key={cat.value} value={cat.value}>
-            {cat.label}
-          </option>
-        ))}
-      </select>
+            {/* Grid: 1 column on mobile (default), 2 columns on small screens (sm:) and up */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Category
+                </label>
+                <select
+                  name="category"
+                  required
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-white focus:ring-2 focus:ring-emerald-500 outline-none"
+                >
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Brand
+                </label>
+                <input
+                  name="brand"
+                  placeholder="e.g. McDonald's"
+                  required
+                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                />
+              </div>
+            </div>
 
-      <input
-        name="brand"
-        placeholder="Brand"
-        required
-        className="border p-2 w-full rounded"
-      />
-      <textarea
-        name="description"
-        placeholder="Description"
-        required
-        className="border p-2 w-full rounded"
-      />
-      <input
-        name="price"
-        type="number"
-        step="0.1"
-        placeholder="Price"
-        required
-        className="border p-2 w-full rounded"
-      />
-      <input
-        name="stock"
-        type="number"
-        placeholder="Stock"
-        required
-        className="border p-2 w-full rounded"
-      />
-      <input
-        name="rating"
-        type="number"
-        step="0.1"
-        min="0"
-        max="5"
-        placeholder="4.5"
-        className="border p-2 w-full rounded"
-      />
-      <input
-        type="file"
-        onChange={(e) => setFiles(e.target.files)}
-        className="w-full"
-      />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Description
+              </label>
+              <textarea
+                name="description"
+                rows={3}
+                placeholder="Briefly describe the product..."
+                required
+                className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+              />
+            </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-emerald-600 text-white p-3 rounded font-bold"
-      >
-        {loading ? "Adding..." : "Add Product"}
-      </button>
-    </form>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Price ($)
+                </label>
+                <input
+                  name="price"
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                  required
+                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Initial Rating
+                </label>
+                <input
+                  name="rating"
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  max="5"
+                  placeholder="4.5"
+                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Product Image
+              </label>
+              <div className="mt-1 flex justify-center px-4 py-6 border-2 border-gray-300 border-dashed rounded-lg">
+                <input
+                  type="file"
+                  onChange={(e) => setFiles(e.target.files)}
+                  className="text-sm text-gray-500 w-full"
+                />
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 text-white p-4 rounded-lg font-bold transition-all disabled:opacity-50 shadow-md"
+          >
+            {loading ? "Adding Product..." : "Add Product to Menu"}
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }

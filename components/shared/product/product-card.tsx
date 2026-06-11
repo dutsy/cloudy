@@ -89,7 +89,7 @@ const ProductCard = ({ product }: { product: any }) => {
               </span>
             )}
             <span className="text-[11px] font-medium text-amber-500 mt-0.5">
-              ★ {Number(product.rating).toFixed(1)} ⭐
+              {Number(product.rating).toFixed(1)} ⭐
             </span>
           </div>
 

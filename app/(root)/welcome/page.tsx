@@ -1,8 +1,13 @@
+'use client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Leaf, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 export default function WelcomePage() {
+  const searchParams = useSearchParams();
+  const orderNumber = searchParams.get('order');
+
   return (
     // Uses 'bg-background' to stay synced with your global theme
     <div className="flex flex-col items-center justify-center min-h-[80vh] px-6 text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -24,6 +29,9 @@ export default function WelcomePage() {
 
       {/* Text Content */}
       <div className="space-y-4">
+        <h1 className="text-4xl font-black">
+            Order <span className="text-emerald-600">#{orderNumber || "Confirmed"}</span>
+        </h1>
         <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-foreground">
             Freshly <span className="text-emerald-600 dark:text-emerald-400">Verified.</span>
         </h1>

@@ -13,6 +13,7 @@ export default async function KitchenPage() {
       notes,
       created_at,
       status,
+      daily_order_number,
       order_items (
         id,
         quantity,

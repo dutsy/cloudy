@@ -9,17 +9,14 @@ export default async function KitchenLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // 1. Initialize your custom server client
   const supabase = await createSupabaseServerClient();
 
-  // 2. Check if the user is logged in
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     redirect('/sign-in');
   }
 
-  // 3. Fetch their role from your public.profiles table
   const { data: profile } = await supabase
     .from('profiles')
     .select('role')

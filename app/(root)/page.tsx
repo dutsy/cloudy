@@ -50,16 +50,6 @@ export default async function Homepage() {
 
 
 
-
-
-
-
-
-
-
-
-
-
 // import sampleData from "@/db/sample-data";
 // import ProductList from "@/components/shared/product/product-list";
 // import { supabase } from "@/lib/supabase";

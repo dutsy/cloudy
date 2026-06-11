@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
+import { Resend } from 'resend';
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,7 +22,6 @@ export async function POST(request: NextRequest) {
     }
 
 
-    console.log("PAYLOAD RECEIVED:", JSON.stringify(body, null, 2));
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
         table_number: table_number || "Takeaway",
         notes: null // Explicitly handle the 'notes' column if it exists in your schema
       })
-      .select()
+      .select("id, daily_order_number")
       .single();
 
     // DIAGNOSTIC CHECK B: Capture parent creation failures instantly
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       product_id: item.id,
       quantity: Number(item.quantity),
       price_at_purchase: Number(item.price),
-      note: item.note || null,     // Ensure this is here!
+      note: item.note || null,
     }));
 
     // 3. Try writing to the Child Table (order_items)
@@ -64,7 +64,20 @@ export async function POST(request: NextRequest) {
       }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, orderId: order.id }, { status: 200 });
+
+
+    console.log(`SUCCESS: Order ${order.id} with ${order.daily_order_number} items created successfully.`);
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    await resend.emails.send({
+      from: 'order@yourdomain.com',
+      to: user.email, // Ensure you have user.email from supabase.auth.getUser()
+      subject: `Order Confirmation #${order.daily_order_number}`,
+      html: `<p>Hi! Your order <strong>#${order.daily_order_number}</strong> is confirmed and being prepared.</p>`
+    });
+
+    return NextResponse.json({ success: true, orderId: order.id, orderNumber: order.daily_order_number }, { status: 200 });
 
   } catch (error: any) {
     console.error("CRITICAL APP ENGINE CRASH:", error);

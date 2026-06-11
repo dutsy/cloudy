@@ -150,6 +150,7 @@ export default function KitchenStream({ initialOrders }: KitchenStreamProps) {
                 className="flex flex-col bg-card border-2 border-emerald-600/10 rounded-2xl shadow-sm overflow-hidden"
               >
                 <div className="p-4 bg-emerald-500/[0.02] border-b border-muted flex justify-between items-center">
+                <h4 className="text-2xl font-black">#{order.daily_order_number}</h4>
                   <span className="text-xs font-black uppercase text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-lg">
                     {order.table_number && order.table_number !== ""
                       ? `Table ${order.table_number}`

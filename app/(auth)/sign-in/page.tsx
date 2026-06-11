@@ -16,7 +16,8 @@ export default async function EmailPasswordPage() {
 
       
     return (<div>
-        <EmailPasswordDemo user={user} />
+        <EmailPasswordDemo/>
+        {/* <EmailPasswordDemo user={user} /> */}
         
 
     </div>);;

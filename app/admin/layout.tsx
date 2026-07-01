@@ -41,8 +41,10 @@ export default function AdminLayout({
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Back to Home", href: "/", icon: Home },
     { name: "Add Product", href: "/admin/add-product", icon: PlusCircle },
+    { name: "User Management", href: "/admin/user-management", icon: BarChart3 },
     { name: "Manage Products", href: "/admin/product-availability", icon: Package },
     { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+    { name: "Payments", href: "payments", icon: BarChart3 },
   ];
 
   return (

@@ -42,6 +42,13 @@ export default async function KitchenLayout({
             </Link>
           </Button>
 
+          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+            <Link href="/payments">
+            <LayoutDashboard className="mr-2 h-4 w-4" />
+              Payments
+            </Link>
+          </Button>
+
           {/* Conditional Admin Portal Redirect Shortcut */}
           {profile.role === 'admin' && (
             <Button asChild variant="secondary" size="sm" className="border-orange-500/20 text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:text-orange-400 dark:hover:text-orange-300 dark:hover:bg-orange-950/20">

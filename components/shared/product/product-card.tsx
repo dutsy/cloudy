@@ -81,16 +81,13 @@ const ProductCard = ({ product }: { product: any }) => {
             {!isOutOfStock ? (
               <ProductPrice
                 value={Number(product.price)}
-                className="text-emerald-600 dark:text-emerald-400 font-black text-xl tracking-tight"
+                className="text-black-700 dark:text-black-400 font-black text-xl tracking-tight"
               />
             ) : (
               <span className="text-xs font-bold uppercase tracking-wide text-destructive bg-destructive/10 px-2 py-0.5 rounded-md">
                 Out of Stock
               </span>
             )}
-            <span className="text-[11px] font-medium text-amber-500 mt-0.5">
-              {Number(product.rating).toFixed(1)} ⭐
-            </span>
           </div>
 
           {/* CUSTOMIZABLE ADD ACTION BUTTON BUTTON */}
@@ -98,8 +95,7 @@ const ProductCard = ({ product }: { product: any }) => {
             <DialogTrigger asChild>
               <Button 
                 disabled={isOutOfStock}
-                className="rounded-xl px-4 h-10 font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition-all duration-200 select-none cursor-pointer flex items-center gap-1.5 active:scale-[0.98]"
-              >
+                className="rounded-xl px-4 h-10 font-bold bg-blue-950 hover:bg-blue-900 text-white shadow-sm transition-all duration-200 select-none cursor-pointer flex items-center gap-1.5 active:scale-[0.98]"              >
                 <Plus className="h-4 w-4 stroke-[3]" />
                 Add
               </Button>

@@ -68,14 +68,14 @@ export async function POST(request: NextRequest) {
 
     console.log(`SUCCESS: Order ${order.id} with ${order.daily_order_number} items created successfully.`);
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    // const resend = new Resend(process.env.RESEND_API_KEY);
 
-    await resend.emails.send({
-      from: 'order@yourdomain.com',
-      to: user.email, // Ensure you have user.email from supabase.auth.getUser()
-      subject: `Order Confirmation #${order.daily_order_number}`,
-      html: `<p>Hi! Your order <strong>#${order.daily_order_number}</strong> is confirmed and being prepared.</p>`
-    });
+    // await resend.emails.send({
+    //   from: 'order@yourdomain.com',
+    //   to: user.email, // Ensure you have user.email from supabase.auth.getUser()
+    //   subject: `Order Confirmation #${order.daily_order_number}`,
+    //   html: `<p>Hi! Your order <strong>#${order.daily_order_number}</strong> is confirmed and being prepared.</p>`
+    // });
 
     return NextResponse.json({ success: true, orderId: order.id, orderNumber: order.daily_order_number }, { status: 200 });
 

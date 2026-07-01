@@ -19,7 +19,7 @@ const HomepageClient = ({ initialProducts }: { initialProducts: any[] }) => {
   const categories = [
     { id: "food", label: "Food", icon: "🥐" },
     { id: "drinks", label: "Drinks", icon: "☕" },
-    { id: "smoke", label: "Smoke", icon: "💨" },
+    { id: "smoke", label: "Shisha", icon: "💨" },
   ];
 
   // Filter based on the state

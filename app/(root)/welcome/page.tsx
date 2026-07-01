@@ -18,7 +18,7 @@ export default function WelcomePage() {
         <div className="absolute inset-0 bg-emerald-500/20 blur-3xl rounded-full" />
         
         <div className="relative h-28 w-28 bg-emerald-50 border border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-500/30 rounded-[40px] flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xl">
-          <Leaf size={56} strokeWidth={1.5} className="rotate-12" />
+         
           
           {/* Small checkmark badge */}
           <div className="absolute -bottom-1 -right-1 bg-background rounded-full p-1">
@@ -36,7 +36,7 @@ export default function WelcomePage() {
             Freshly <span className="text-emerald-600 dark:text-emerald-400">Verified.</span>
         </h1>
         <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
-            Welcome to the green side of Cloudy. Your account is ready, the vibes are fresh, and we’re excited to have you.
+            fuck you moammad bitch 
         </p>
       </div>
 
@@ -55,13 +55,6 @@ export default function WelcomePage() {
       </div>
 
       {/* Footer detail */}
-      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-emerald-600/50 dark:text-emerald-400/30">
-        <span>Organic</span>
-        <span className="h-1 w-1 rounded-full bg-current" />
-        <span>Fresh</span>
-        <span className="h-1 w-1 rounded-full bg-current" />
-        <span>Cloudy</span>
-      </div>
     </div>
   );
 }

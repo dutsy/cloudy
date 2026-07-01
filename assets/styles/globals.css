@@ -54,52 +54,74 @@
 
 /* 1. Variable Definitions (Source of Truth) */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Light Mode: Clean, crisp, with subtle cool blue undertones */
+  --background: oklch(1 0.0 0);
+  --foreground: oklch(0.2 0.02 240);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.2 0.02 240);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.95 0 0); /* Slightly darker for better ghost hover visibility */
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --popover-foreground: oklch(0.2 0.02 240);
+  
+  /* Primary: Rich, deep royal blue */
+  --primary: oklch(0.35 0.15 250);
+  --primary-foreground: oklch(0.98 0.01 240);
+  
+  --secondary: oklch(0.92 0.03 240);
+  --secondary-foreground: oklch(0.3 0.05 240);
+  --muted: oklch(0.94 0.02 240);
+  --muted-foreground: oklch(0.5 0.03 240);
+  --accent: oklch(0.9 0.04 240);
+  --accent-foreground: oklch(0.25 0.05 240);
+  
+  /* Destructive remains red for UX consistency */
+  --destructive: oklch(0.55 0.2 25);
+  
+  --border: oklch(0.88 0.02 240);
+  --input: oklch(0.88 0.02 240);
+  --ring: oklch(0.6 0.15 250);
   --radius: 0.625rem;
-  /* Charts */
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+
+  /* Charts: Strictly Blue/Indigo/Purple palette (NO GREEN/TEAL) */
+  --chart-1: oklch(0.6 0.2 250);   /* Vibrant Royal Blue */
+  --chart-2: oklch(0.65 0.15 270);  /* Indigo */
+  --chart-3: oklch(0.7 0.15 290);   /* Purple */
+  --chart-4: oklch(0.55 0.15 230);  /* Deep Sky Blue */
+  --chart-5: oklch(0.5 0.1 210);    /* Steel Blue */
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
+  /* Dark Mode: Deep midnight blue aesthetic */
+  --background: oklch(0.15 0.03 250);
+  --foreground: oklch(0.95 0.02 240);
+  --card: oklch(0.18 0.03 250);
+  --card-foreground: oklch(0.95 0.02 240);
+  --popover: oklch(0.18 0.03 250);
+  --popover-foreground: oklch(0.95 0.02 240);
+  
+  /* Primary: Bright, glowing blue for high contrast on dark backgrounds */
+  --primary: oklch(0.7 0.15 250);
+  --primary-foreground: oklch(0.15 0.03 250);
+  
+  --secondary: oklch(0.25 0.04 250);
+  --secondary-foreground: oklch(0.95 0.02 240);
+  --muted: oklch(0.25 0.04 250);
+  --muted-foreground: oklch(0.65 0.05 240);
+  --accent: oklch(0.3 0.05 250);
+  --accent-foreground: oklch(0.95 0.02 240);
+  
+  /* Destructive: Muted red for dark mode */
+  --destructive: oklch(0.4 0.15 25);
+  
+  --border: oklch(0.25 0.04 250);
+  --input: oklch(0.25 0.04 250);
+  --ring: oklch(0.5 0.2 250);
+
+  /* Charts: Lighter, vibrant blues/indigos for dark mode visibility */
+  --chart-1: oklch(0.7 0.2 250);
+  --chart-2: oklch(0.75 0.15 270);
+  --chart-3: oklch(0.8 0.15 290);
+  --chart-4: oklch(0.65 0.15 230);
+  --chart-5: oklch(0.6 0.1 210);
 }
 
 /* 2. Global Base Styles */

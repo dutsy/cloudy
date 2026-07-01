@@ -45,7 +45,6 @@ export default function CartPage() {
 
       if (res.ok) {
         const data = await res.json();
-        console.log("Checkout response status:sddssdfsdfdsfsdf", data.orderNumber);
         router.push(`/welcome?order=${data.orderNumber}`);
       }
     } catch (err) {

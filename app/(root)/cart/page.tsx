@@ -1,5 +1,6 @@
 "use client";
 
+import { placeOrder } from "@/lib/orders-client";
 import { useCart } from "@/components/shared/cart-context";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { Plus, Minus, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { getTableNumber } from "@/lib/storage";
 
 export default function CartPage() {
   const { items, addItem, removeItem, totalPrice, itemCount, clearCart } =
@@ -17,38 +19,36 @@ export default function CartPage() {
   const router = useRouter();
 
   // Unified State management moved right to the parent container
-  const [tableNumber, setTableNumber] = useState<string>("1");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleCheckout = async () => {
+    
     if (items.length === 0) return;
     setIsSubmitting(true);
 
-    const orderPayload = {
-      items: items, // Using your active array hook data mapping name
-      total_amount: totalPrice,
-      table_number: tableNumber || "Takeaway",
-    };
+    // 1. Get the table number from local storage
+    const tableNumber = getTableNumber();
+
+    // 2. Prepare items to match the RPC expectations
+    // (Ensure your 'items' array matches the structure: product_id, quantity, price_at_purchase, note)
+    const formattedItems = items.map((item) => ({
+      product_id: item.id,
+      quantity: item.quantity,
+      price_at_purchase: item.price,
+      note: item.note || "",
+    }));
 
     try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderPayload),
-      });
-
-      if (typeof clearCart === "function") {
+      // 3. Call the Supabase RPC directly
+      await placeOrder(tableNumber, formattedItems, totalPrice);
+      // 4. Success handling
+      if (typeof clearCart === "function"){
         clearCart();
       }
-
-      if (res.ok) {
-        const data = await res.json();
-        router.push(`/welcome?order=${data.orderNumber}`);
-      }
+      router.push(`/welcome`);
     } catch (err) {
       console.error("Checkout execution failure: ", err);
+      alert("Failed to place order. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -153,35 +153,6 @@ export default function CartPage() {
             <h2 className="text-xl font-black tracking-tight text-foreground">
               Order Summary
             </h2>
-
-            {/* DYNAMIC TABLE SELECTOR COMPONENT FIELD */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-black uppercase tracking-wider text-muted-foreground">
-                Dining Option
-              </label>
-              <select
-                value={tableNumber}
-                onChange={(e) => {
-                  console.log("Selected Table:", e.target.value);
-                  setTableNumber(e.target.value);
-                }}
-                className="w-full h-11 px-3 rounded-xl border border-input bg-background font-bold text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
-              >
-                <option value="1">☕ Table 1</option>
-                <option value="2">☕ Table 2</option>
-                <option value="3">☕ Table 3</option>
-                <option value="4">☕ Table 4</option>
-                <option value="5">☕ Table 5</option>
-                <option value="6">☕ Table 6</option>
-                <option value="7">☕ Table 7</option>
-                <option value="8">☕ Table 8</option>
-                <option value="9">☕ Table 9</option>
-                <option value="10">☕ Table 10</option>
-                <option value="11">☕ Table 11</option>
-                <option value="12">☕ Table 12</option>
-                <option value="13">☕ Table 13</option>
-              </select>
-            </div>
 
             <Separator className="bg-muted" />
 

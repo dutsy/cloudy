@@ -14,6 +14,44 @@ export async function placeOrder(tableNumber: string, formattedItems: any[], tot
   return data;
 }
 
+// lib/orders-server.ts
+
+export async function getUnpaidTablesWithItems() {
+  const supabase = getSupabaseBrowserClient();  
+  const { data, error } = await supabase
+    .from("orders")
+    .select(`
+      *,
+      order_items(
+        id, 
+        quantity, 
+        products(name, price)
+      )
+    `)
+    .eq("is_paid", false);
+
+  if (error) throw error;
+  return data || [];
+}
+
+
+export function subscribeToPaymentUpdates(onUpdate: () => void) {
+  const supabase = getSupabaseBrowserClient();
+
+  const channel = supabase
+    .channel("payment-orders-queue")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "orders" },
+      () => onUpdate()
+    )
+    .subscribe();
+
+  return () => { supabase.removeChannel(channel); };
+}
+
+
+
 export async function getActiveKitchenData() {
   const supabase = getSupabaseBrowserClient();
 
@@ -130,3 +168,20 @@ export async function markAllItemsAsPrepared(itemIds: string[]) {
 
   if (error) throw error;
 }
+
+
+export async function markOrderAsPaid(orderId: string) {
+
+  const supabase = getSupabaseBrowserClient();
+
+  const { error } = await supabase
+    .from("orders")
+    .update({ is_paid: true })
+    .eq("id", orderId);
+
+  if (error) {
+    console.error("Error marking order as paid:", error);
+    throw error;
+  }
+}
+

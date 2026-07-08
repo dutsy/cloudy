@@ -6,7 +6,7 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 const CATEGORIES = [
   { value: "food", label: "🍔 Food" },
   { value: "drinks", label: "🥤 Drinks" },
-  { value: "smoke", label: "💨 Smoke" },
+  { value: "smoke", label: "💨 Shisha" },
 ];
 
 const generateSlug = (name: string) => {

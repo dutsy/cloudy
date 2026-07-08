@@ -60,7 +60,7 @@ export default function CartPage() {
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
         <ShoppingBag className="w-16 h-16 text-zinc-300" />
         <h1 className="text-2xl font-black tracking-tight text-foreground">
-          Your tray is empty
+          Your Cart is empty
         </h1>
         <p className="text-sm text-muted-foreground">
           Looks like you haven't added any Cloudy items yet.
@@ -78,7 +78,7 @@ export default function CartPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-8">
-        Shopping Tray ({itemCount})
+        Shopping Cart ({itemCount})
       </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -107,7 +107,7 @@ export default function CartPage() {
                       {item.name}
                     </h3>
                     <p className="font-black text-sm sm:text-base text-foreground shrink-0">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      &#8362;{(item.price * item.quantity).toFixed(2)}
                     </p>
                   </div>
 
@@ -161,14 +161,14 @@ export default function CartPage() {
               <div className="flex justify-between text-sm font-medium text-muted-foreground">
                 <span>Subtotal</span>
                 <span className="font-bold text-foreground">
-                  ${totalPrice.toFixed(2)}
+                  &#8362;{totalPrice.toFixed(2)}
                 </span>
               </div>
               <Separator className="border-dashed" />
               <div className="flex justify-between items-center text-xl font-black tracking-tight text-foreground pt-1">
                 <span>Total</span>
                 <span className="text-emerald-600 dark:text-emerald-400 font-black">
-                  ${totalPrice.toFixed(2)}
+                  &#8362;{totalPrice.toFixed(2)}
                 </span>
               </div>
             </div>

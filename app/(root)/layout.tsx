@@ -2,10 +2,6 @@ import Header from '@/components/shared/header';
 import Footer from '@/components/footer';
 import TableInitializer from '@/components/shared/TableInitializer';
 
-
-
-
-
 export default function RootLayout({
   children,
 }: Readonly<{

@@ -32,11 +32,8 @@ export default function WelcomePage() {
         <h1 className="text-4xl font-black">
             Order <span className="text-emerald-600">#{orderNumber || "Confirmed"}</span>
         </h1>
-        <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-foreground">
-            Freshly <span className="text-emerald-600 dark:text-emerald-400">Verified.</span>
-        </h1>
         <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
-            fuck you moammad bitch 
+           Thank you, Your order is being prepared.
         </p>
       </div>
 

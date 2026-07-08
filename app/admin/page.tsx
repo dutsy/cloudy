@@ -55,8 +55,13 @@ const adminLinks = [
     color: "text-gray-500",
   },
   { title: "Back to Home", href: "/", icon: Home, color: "text-gray-500" },
+  {
+    title: "Delete order",
+    href: "/admin/delete-order",
+    icon: Package,
+    color: "text-gray-500",
+  },
 ];
-
 
 export default function AdminDashboardPage() {
   return (

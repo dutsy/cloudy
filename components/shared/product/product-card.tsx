@@ -151,7 +151,7 @@ const ProductCard = ({ product }: { product: any }) => {
                   className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black h-12 rounded-xl text-base shadow-md shadow-emerald-600/10 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <ShoppingBag className="h-5 w-5" />
-                  Add to Tray — <ProductPrice value={Number(product.price)} className="text-white" />
+                  Add to Cart — <ProductPrice value={Number(product.price)} className="text-white" />
                 </Button>
               </DialogFooter>
             </DialogContent>

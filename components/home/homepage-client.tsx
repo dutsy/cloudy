@@ -2,18 +2,15 @@
 
 import { useState } from "react";
 import ProductList from "@/components/shared/product/product-list";
-import { useCart } from "@/components/shared/cart-context"; // Import the hook
+import type { Product } from "@/types";
 
-interface Product {
-  id: string;
-  name: string;
-  category: string;
-  // add other fields as needed
+interface HomepageClientProps {
+  initialProducts: Product[];
 }
 
-const HomepageClient = ({ initialProducts }: { initialProducts: any[] }) => {
 
-  const { items, totalPrice, itemCount, clearCart } = useCart();
+const HomepageClient = ({ initialProducts }: HomepageClientProps) => {
+
   const [activeCategory, setActiveCategory] = useState("food");
 
   const categories = [

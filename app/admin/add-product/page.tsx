@@ -2,12 +2,16 @@
 
 import { useState, useRef } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
+import { ProductInsert } from "@/types";
 
 const CATEGORIES = [
   { value: "food", label: "🍔 Food" },
   { value: "drinks", label: "🥤 Drinks" },
   { value: "smoke", label: "💨 Shisha" },
 ];
+
+
+
 
 const generateSlug = (name: string) => {
   return name
@@ -59,16 +63,22 @@ export default function AddProductPage() {
 
       // 5. Insert to DB
       const { error: dbError } = await supabase.from("products").insert({
-        name: formData.get("name"),
+        name: String(formData.get("name") || ""),
         slug: generatedSlug,
-        category: formData.get("category"),
-        brand: formData.get("brand"),
-        description: formData.get("description"),
-        price: parseFloat((formData.get("price") as string) || "0"),
+        category: String(formData.get("category") || ""),
+        brand: String(formData.get("brand") || ""),
+        description: String(formData.get("description") || ""),
+
+        price: Number(formData.get("price") || 0),
+
         stock: 9999,
-        rating: parseFloat((formData.get("rating") as string) || "0"), // Added this
-        num_reviews: 0, // Usually starts at 0 for new products
+
+        rating: Number(formData.get("rating") || 0),
+
+        num_reviews: 0,
+
         images: imageUrls,
+
         avaliable: true,
       });
 

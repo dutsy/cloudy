@@ -6,5 +6,5 @@ export default async function KitchenPage() {
 
   const orders = await getActiveKitchenData();
 
-  return <KitchenStream initialItems={orders || []} />;
+  return <KitchenStream initialItems={orders} />;
 }

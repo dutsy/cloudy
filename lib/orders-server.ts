@@ -1,22 +1,32 @@
 // lib/services/orders-server.ts
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
+import type { KitchenItem, UnpaidOrder, PaymentOrder } from "@/types";
 
-// 1. GET: Fetch unpaid orders 
-export async function getUnpaidOrders() {
+
+export async function getUnpaidOrders(): Promise<UnpaidOrder[]> {
   const supabase = await createSupabaseServerClient();
+
   const { data, error } = await supabase
     .from("orders")
-    .select(`*, order_items (quantity, price_at_purchase, products (name))`)
+    .select(`
+      *,
+      order_items (
+        quantity,
+        price_at_purchase,
+        products(name)
+      )
+    `)
     .eq("is_paid", false)
     .order("table_number", { ascending: true });
 
   if (error) throw error;
-  return data;
+
+  return data ?? [];
 }
 
 // lib/orders-server.ts
 
-export async function getUnpaidTablesWithItems() {
+export async function getUnpaidTablesWithItems(): Promise<PaymentOrder[]> {
   const supabase = await createSupabaseServerClient();
 
   const { data, error } = await supabase
@@ -50,7 +60,7 @@ export async function markOrdersAsPaid(orderIds: string[]) {
 }
 
 // 3. GET: Pending kitchen items
-export async function getPendingKitchenItems() {
+export async function getPendingKitchenItems(): Promise<KitchenItem[]> {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("order_items")
@@ -63,10 +73,12 @@ export async function getPendingKitchenItems() {
     `)
     .eq("is_prepared", false);
 
-  return data || [];
+  if (error) throw error;
+
+  return data as KitchenItem[];
 }
 
-export async function getActiveKitchenData() {
+export async function getActiveKitchenData(): Promise<KitchenItem[]> {
   const supabase = await createSupabaseServerClient();
 
   // We fetch items that are not prepared.
@@ -89,27 +101,39 @@ export async function getActiveKitchenData() {
 }
 
 // lib/orders-server.ts
-export async function getAnalytics(range: 'today' | 'week' | 'month') {
+export async function getAnalytics(range: "today" | "week" | "month") {
   const supabase = await createSupabaseServerClient();
+
   const now = new Date();
 
-  // Define time range start
-  let startDate = new Date();
-  if (range === 'today') startDate.setHours(0, 0, 0, 0);
-  if (range === 'week') startDate.setDate(now.getDate() - 7);
-  if (range === 'month') startDate.setMonth(now.getMonth() - 1);
+  const startDate = new Date(now);
+
+if (range === "today") {
+  startDate.setHours(0, 0, 0, 0);
+}
+
+if (range === "week") {
+  startDate.setDate(now.getDate() - 7);
+}
+
+if (range === "month") {
+  startDate.setMonth(now.getMonth() - 1);
+}
 
   const { data, error } = await supabase
-    .from('orders')
-    .select('id, total_amount, created_at')
-    .eq('is_paid', true)
-    .gte('created_at', startDate.toISOString());
+    .from("orders")
+    .select("id, total_amount, created_at")
+    .eq("is_paid", true)
+    .gte("created_at", startDate.toISOString());
 
   if (error) throw error;
 
-  // Aggregate calculations
-  const totalRevenue = data.reduce((sum, order) => sum + (order.total_amount || 0), 0);
-  const totalOrders = data.length;
+  const totalRevenue = (data ?? []).reduce(
+    (sum, order) => sum + (order.total_amount ?? 0),
+    0
+  );
+
+  const totalOrders = data?.length ?? 0;
 
   return { totalRevenue, totalOrders };
 }
@@ -237,7 +261,7 @@ export async function getMonthlyReport(yearMonth: string) {
 
 export async function getPopularProducts(filter: string) {
   const supabase = await createSupabaseServerClient();
-  
+
   let query = supabase.from('order_items').select('quantity, products (name), orders!inner (created_at)');
 
   if (filter !== 'all') {
@@ -251,11 +275,17 @@ export async function getPopularProducts(filter: string) {
 
   if (error || !data || data.length === 0) return [];
 
-  const totals = data.reduce((acc, item: any) => {
-    const name = item.products?.name || "Unknown";
-    acc[name] = (acc[name] || 0) + (item.quantity || 0);
-    return acc;
-  }, {});
+  const totals = data.reduce<Record<string, number>>(
+    (acc, item) => {
+
+      const name = item.products?.name ?? "Unknown";
+
+      acc[name] = (acc[name] ?? 0) + item.quantity;
+
+      return acc;
+    },
+    {}
+  );
 
   return Object.entries(totals).map(([name, count]) => ({ name, count }));
 }
@@ -263,7 +293,11 @@ export async function getPopularProducts(filter: string) {
 
 // lib/orders-server.ts
 
-export async function archiveOrder(orderId: number, reason: string, staffName: string) {
+export async function archiveOrder(
+  orderId: string,
+  reason: string,
+  staffName: string
+) {
   const supabase = await createSupabaseServerClient();
 
   // 1. Fetch current order data

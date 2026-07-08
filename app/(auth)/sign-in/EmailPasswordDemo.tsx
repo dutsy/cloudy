@@ -87,7 +87,7 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-4">
-      <div className="w-full max-w-[400px] space-y-8">
+      <div className="w-full max-w-100 space-y-8">
         {/* BRAND SECTION - Updated to Emerald */}
         <div className="flex flex-col items-center text-center space-y-2">
           <div className="h-16 w-16 bg-emerald-500/10 rounded-3xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-inner">
@@ -95,14 +95,14 @@ export default function SignInPage() {
           </div>
           <div className="space-y-1">
             <h1 className="text-3xl font-bold tracking-tight">Cloudy</h1>
-            <p className="text-sm text-emerald-600/60 dark:text-emerald-400/60 font-medium uppercase tracking-widest text-muted-foreground">
+            <p className="text-sm  dark:text-emerald-400/60 font-medium uppercase tracking-widest text-muted-foreground">
               Freshly Brewed Community
             </p>
           </div>
         </div>
 
         {/* AUTH CARD - Updated to Emerald accents */}
-        <div className="bg-card border border-border/50 rounded-[32px] p-8 shadow-2xl relative overflow-hidden">
+        <div className="bg-card border border-border/50 rounded-4xl p-8 shadow-2xl relative overflow-hidden">
           {/* Decorative Glow - Updated to Emerald */}
           <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 blur-[80px] pointer-events-none" />
 
@@ -181,11 +181,11 @@ export default function SignInPage() {
         {/* SOCIAL LOGIN */}
         <div className="space-y-4">
           <div className="flex items-center gap-4 text-muted-foreground/30">
-            <div className="h-[1px] flex-1 bg-current" />
+            <div className="h-px flex-1 bg-current" />
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
               OR
             </span>
-            <div className="h-[1px] flex-1 bg-current" />
+            <div className="h-px flex-1 bg-current" />
           </div>
 
           <button

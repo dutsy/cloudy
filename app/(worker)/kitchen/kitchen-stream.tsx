@@ -7,9 +7,21 @@ import {
   markAllItemsAsPrepared,
 } from "@/lib/orders-client";
 import { Badge } from "@/components/ui/badge";
+import type { KitchenItem } from "@/types";
 
-export default function KitchenStream({ initialItems }) {
-  const [items, setItems] = useState(initialItems || []);
+interface KitchenStreamProps {
+  initialItems: KitchenItem[];
+}
+
+type GroupedTables = {
+  [tableNumber: string]: {
+    dailyNumber: number | null;
+    items: KitchenItem[];
+  };
+};
+
+export default function KitchenStream({ initialItems }: KitchenStreamProps) {
+  const [items, setItems] = useState<KitchenItem[]>(initialItems);
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   const fetchOrders = useCallback(async () => {
@@ -23,11 +35,11 @@ export default function KitchenStream({ initialItems }) {
 
   // Use the memoized grouping logic you already wrote
   const groupedTables = useMemo(() => {
-    return items.reduce((acc: any, item: any) => {
-      const tableNum = item.orders?.table_number;
+    return items.reduce<GroupedTables>((acc, item) => {
+      const tableNum = item.orders?.table_number ?? "Unknown";
       if (!acc[tableNum]) {
         acc[tableNum] = {
-          dailyNumber: item.orders?.daily_order_number,
+          dailyNumber: item.orders?.daily_order_number ?? null,
           items: [],
         };
       }
@@ -56,7 +68,7 @@ export default function KitchenStream({ initialItems }) {
     }
   };
 
-  const handleCompleteAll = async (items: any[]) => {
+  const handleCompleteAll = async (items: KitchenItem[]) => {
     const ids = items.map((item) => item.id);
     try {
       await markAllItemsAsPrepared(ids);
@@ -95,7 +107,7 @@ export default function KitchenStream({ initialItems }) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
           {Object.entries(groupedTables).map(
-            ([tableNum, data]: [string, any]) => {
+            ([tableNum, data]: [string, GroupedTables[string]]) => {
               const orderTime = new Date(
                 data.items[0].created_at,
               ).toLocaleTimeString([], {
@@ -108,7 +120,7 @@ export default function KitchenStream({ initialItems }) {
                   key={tableNum}
                   className="flex flex-col bg-card border-2 border-emerald-600/10 rounded-2xl shadow-sm overflow-hidden"
                 >
-                  <div className="p-4 bg-emerald-500/[0.02] border-b border-muted flex justify-between items-center">
+                  <div className="p-4 bg-emerald-500/2 border-b border-muted flex justify-between items-center">
                     <h4 className="text-2xl font-black">Table {tableNum}</h4>
 
                     <span className="text-xs font-black uppercase text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-lg">
@@ -128,7 +140,7 @@ export default function KitchenStream({ initialItems }) {
 
                   <div className="p-4 sm:p-5 flex-1 space-y-4">
                     <ul className="divide-y divide-muted/60">
-                      {data.items.map((item: any) => (
+                      {data.items.map((item) => (
                         <li key={item.id} className="py-3 flex flex-col gap-2">
                           <div className="flex items-center justify-between gap-3">
                             <div className="flex items-center gap-2.5">
@@ -156,7 +168,7 @@ export default function KitchenStream({ initialItems }) {
                           </div>
 
                           {item.note && (
-                            <div className="ml-8.5 px-3 py-1.5 bg-sky-500/[0.06] border border-sky-500/20 rounded-lg text-xs text-sky-800 font-medium italic">
+                            <div className="ml-8.5 px-3 py-1.5 bg-sky-500/6 border border-sky-500/20 rounded-lg text-xs text-sky-800 font-medium italic">
                               {item.note}
                             </div>
                           )}

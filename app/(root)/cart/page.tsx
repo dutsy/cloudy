@@ -63,7 +63,7 @@ export default function CartPage() {
           Your Cart is empty
         </h1>
         <p className="text-sm text-muted-foreground">
-          Looks like you haven't added any Cloudy items yet.
+          Looks like you &apos; added any Cloudy items yet.
         </p>
         <Button
           asChild
@@ -113,7 +113,7 @@ export default function CartPage() {
 
                   {/* DISPLAY SPECIAL INSTRUCTION ITEM NOTES */}
                   {item.note && (
-                    <div className="mt-1.5 p-2 bg-emerald-500/[0.03] border border-emerald-500/10 rounded-xl text-xs text-emerald-800 dark:text-emerald-300">
+                    <div className="mt-1.5 p-2 bg-emerald-500/3 border border-emerald-500/10 rounded-xl text-xs text-emerald-800 dark:text-emerald-300">
                       <span className="font-bold block text-[10px] uppercase tracking-wide text-emerald-600 mb-0.5">
                         Note:
                       </span>

@@ -19,7 +19,13 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 
-const ProductCard = ({ product }: { product: any }) => {
+import type { Product } from "@/types";
+
+interface ProductCardProps {
+  product: Product;
+}
+
+const ProductCard = ({ product }: ProductCardProps) => {
   const { addItem, removeItem } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const [note, setNote] = useState("");
@@ -45,16 +51,19 @@ const ProductCard = ({ product }: { product: any }) => {
     <Card className="group w-full max-w-sm border border-muted bg-card shadow-sm hover:shadow-md transition-all duration-200 rounded-2xl overflow-hidden flex flex-col justify-between">
       {/* 1. PRODUCT VISUAL ASPECT BANNER */}
       <div className="relative p-0 items-center overflow-hidden bg-muted/30 aspect-square">
-        <Link href={`/product/${product.slug}`} className="block h-full w-full relative">
+        <Link
+          href={`/product/${product.slug}`}
+          className="block h-full w-full relative"
+        >
           <Image
             src={product.images[0] || PRODUCT_PLACEHOLDER}
             alt={product.name}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             priority={true}
-            />
+          />
         </Link>
-        
+
         {/* Subtle Category/Brand Tag over the image container */}
         <span className="absolute top-3 left-3 bg-background/80 backdrop-blur-md text-[10px] font-black tracking-wider uppercase px-2.5 py-1 rounded-full text-muted-foreground border">
           {product.brand || product.category}
@@ -69,8 +78,9 @@ const ProductCard = ({ product }: { product: any }) => {
               {product.name}
             </h3>
           </Link>
-          <p className="text-xs text-muted-foreground line-clamp-2 min-h-[32px]">
-            {product.description || "Freshly custom-crafted to your specific taste parameters."}
+          <p className="text-xs text-muted-foreground line-clamp-2 min-h-8">
+            {product.description ||
+              "Freshly custom-crafted to your specific taste parameters."}
           </p>
         </div>
 
@@ -93,16 +103,17 @@ const ProductCard = ({ product }: { product: any }) => {
           {/* CUSTOMIZABLE ADD ACTION BUTTON BUTTON */}
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button 
+              <Button
                 disabled={isOutOfStock}
-                className="rounded-xl px-4 h-10 font-bold bg-blue-950 hover:bg-blue-900 text-white shadow-sm transition-all duration-200 select-none cursor-pointer flex items-center gap-1.5 active:scale-[0.98]"              >
-                <Plus className="h-4 w-4 stroke-[3]" />
+                className="rounded-xl px-4 h-10 font-bold bg-blue-950 hover:bg-blue-900 text-white shadow-sm transition-all duration-200 select-none cursor-pointer flex items-center gap-1.5 active:scale-[0.98]"
+              >
+                <Plus className="h-4 w-4 stroke-3" />
                 Add
               </Button>
             </DialogTrigger>
 
             {/* MODAL SHEET CONTENT POPUP CUSTOMIZER */}
-            <DialogContent className="sm:max-w-[425px] rounded-2xl">
+            <DialogContent className="sm:max-w-106.25 rounded-2xl">
               <DialogHeader>
                 <DialogTitle className="text-xl font-black text-foreground tracking-tight">
                   Customize Your Order
@@ -121,8 +132,13 @@ const ProductCard = ({ product }: { product: any }) => {
                     />
                   </div>
                   <div>
-                    <h4 className="font-extrabold text-base text-foreground leading-tight">{product.name}</h4>
-                    <ProductPrice value={Number(product.price)} className="text-sm font-bold text-emerald-600 mt-0.5" />
+                    <h4 className="font-extrabold text-base text-foreground leading-tight">
+                      {product.name}
+                    </h4>
+                    <ProductPrice
+                      value={Number(product.price)}
+                      className="text-sm font-bold text-emerald-600 mt-0.5"
+                    />
                   </div>
                 </div>
 
@@ -135,10 +151,11 @@ const ProductCard = ({ product }: { product: any }) => {
                     placeholder="e.g. Extra oat milk, completely sugar free, double espresso shot..."
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
-                    className="min-h-[90px] resize-none rounded-xl focus-visible:ring-emerald-500"
+                    className="min-h-22.5 resize-none rounded-xl focus-visible:ring-emerald-500"
                   />
                   <p className="text-[10px] text-muted-foreground/70 italic">
-                    *Instructions are tied directly to this single item instance in your tray.
+                    *Instructions are tied directly to this single item instance
+                    in your tray.
                   </p>
                 </div>
               </div>
@@ -151,7 +168,11 @@ const ProductCard = ({ product }: { product: any }) => {
                   className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black h-12 rounded-xl text-base shadow-md shadow-emerald-600/10 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <ShoppingBag className="h-5 w-5" />
-                  Add to Cart — <ProductPrice value={Number(product.price)} className="text-white" />
+                  Add to Cart —{" "}
+                  <ProductPrice
+                    value={Number(product.price)}
+                    className="text-white"
+                  />
                 </Button>
               </DialogFooter>
             </DialogContent>

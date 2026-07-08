@@ -6,6 +6,7 @@ export const metadata = {
   title: "Home | Cloudy",
 };
 
+
 export default async function Homepage() {
   const supabase = await createSupabaseServerClient();
   
@@ -20,12 +21,8 @@ export default async function Homepage() {
   }
 
   // Pass the real database products to the Client Component
-  return <HomepageClient initialProducts={products || []} />;
+  return <HomepageClient initialProducts={products} />;
 }
-
-
-
-
 
 
 

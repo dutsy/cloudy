@@ -1,19 +1,21 @@
 // app/admin/analytics/monthly/page.tsx
-import { getMonthlyReport, getOrdersForMonth } from "@/lib/orders-server";
+import { getOrdersForMonth } from "@/lib/orders-server";
 import MonthlyManager from "./monthly-manager";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-export default async function MonthlyAnalyticsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ month?: string }>;
-}) {
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function MonthlyPage({ searchParams }: PageProps) {
+  
   const resolvedParams = await searchParams;
   const currentMonth = new Date().toISOString().slice(0, 7);
-  const month = /^\d{4}-\d{2}$/.test(resolvedParams.month || "")
-    ? resolvedParams.month
-    : currentMonth;
+  
+  // 4. Safely extract the month (handling the case where it might be an array or undefined)
+  const rawMonth = typeof resolvedParams.month === 'string' ? resolvedParams.month : "";
+  const month = /^\d{4}-\d{2}$/.test(rawMonth) ? rawMonth : currentMonth;
 
   const report = await getOrdersForMonth(month);
 
@@ -26,7 +28,9 @@ export default async function MonthlyAnalyticsPage({
         <ArrowLeft size={20} /> Back
       </Link>
       <h1 className="text-3xl font-black">Monthly Breakdown</h1>
-      <MonthlyManager report={report} selectedMonth={month} />{" "}
+      
+      {/* 6. Pass the data DOWN to your manager component */}
+      <MonthlyManager report={report} selectedMonth={month} />
     </div>
   );
 }

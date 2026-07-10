@@ -4,9 +4,18 @@ import PopularClient from "./popular-client";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-export default async function PopularPage({ searchParams }) {
+// 1. Define the exact shape Next.js uses for page props
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+// 2. Apply the type to your component
+export default async function PopularPage({ searchParams }: PageProps) {
   const resolvedParams = await searchParams;
-  const period = resolvedParams.period || "all";
+  
+  // 3. Extract the period (and ensure it's a string, just in case someone messes with the URL)
+  const rawPeriod = resolvedParams.period;
+  const period = typeof rawPeriod === 'string' ? rawPeriod : "all";
 
   // Fetch data directly from the server
   const data = await getPopularProducts(period);
@@ -20,7 +29,7 @@ export default async function PopularPage({ searchParams }) {
         <ArrowLeft size={20} /> Back
       </Link>
       <h1 className="text-3xl font-black">Monthly Breakdown</h1>
-      <PopularClient initialData={data} />;{" "}
+      <PopularClient initialData={data} />
     </div>
   );
 }

@@ -1,10 +1,9 @@
 "use client";
 
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
-import { User } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Coffee, ArrowRight, Leaf } from "lucide-react"; // Added Leaf for the organic vibe
+import { ArrowRight, Leaf } from "lucide-react"; // Added Leaf for the organic vibe
 import { Button } from "@/components/ui/button";
 
 type Mode = "signup" | "signin";
@@ -58,9 +57,11 @@ export default function SignInPage() {
           router.push("/");
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       setStatus(
-        error.message || "An unexpected error occurred. Please try again.",
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred. Please try again.",
       );
     } finally {
       setIsLoading(false);
@@ -79,9 +80,12 @@ export default function SignInPage() {
         },
       });
       if (error) throw error;
-    } catch (error: any) {
-      setStatus(error.message);
-      setIsLoading(false); // Only turn off if there's an error
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setStatus(error.message);
+      } else {
+        setStatus("Something went wrong.");
+      }
     }
   }
 

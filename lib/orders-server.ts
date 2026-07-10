@@ -1,6 +1,6 @@
 // lib/services/orders-server.ts
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
-import type { KitchenItem, UnpaidOrder, PaymentOrder } from "@/types";
+import type { KitchenItem, UnpaidOrder, PaymentOrder, MonthlyData } from "@/types";
 
 
 export async function getUnpaidOrders(): Promise<UnpaidOrder[]> {
@@ -182,8 +182,7 @@ export async function getOrdersForDate(date: string) {
 }
 
 // lib/orders-server.ts
-export async function getOrdersForMonth(yearMonth: string) {
-  // 1. Validate format strictly (YYYY-MM)
+export async function getOrdersForMonth(yearMonth: string): Promise<MonthlyData> {  // 1. Validate format strictly (YYYY-MM)
   if (!yearMonth || typeof yearMonth !== 'string' || !/^\d{4}-\d{2}$/.test(yearMonth)) {
     console.error("Invalid format received:", yearMonth);
     // Fallback to current month if bad data arrives

@@ -2,9 +2,17 @@
 
 import { useState } from "react";
 import { updateUserRole } from "./users";
+import { Profile } from "@/types"; // 1. Import your global Profile type!
 
-export default function UserListClient({ initialUsers }) {
-  const [users, setUsers] = useState(initialUsers);
+// 2. Define the props interface
+interface UserListClientProps {
+  initialUsers: Profile[];
+}
+
+// 3. Apply the interface to the component
+export default function UserListClient({ initialUsers }: UserListClientProps) {
+  // 4. (Optional but good) explicitly type the state just in case
+  const [users, setUsers] = useState<Profile[]>(initialUsers);
   const [loading, setLoading] = useState<string | null>(null);
 
   const handleRoleChange = async (userId: string, newRole: string) => {
@@ -15,7 +23,7 @@ export default function UserListClient({ initialUsers }) {
       setUsers(prev => 
         prev.map(u => u.id === userId ? { ...u, role: newRole } : u)
       );
-    } catch (err) {
+    } catch { 
       alert("Failed to update role");
     } finally {
       setLoading(null);
@@ -32,7 +40,7 @@ export default function UserListClient({ initialUsers }) {
             
             <select 
               disabled={loading === user.id}
-              defaultValue={user.role}
+              defaultValue={user.role || "client"} // Added fallback just in case role is null in DB
               onChange={(e) => handleRoleChange(user.id, e.target.value)}
               className="bg-background border p-2 rounded-lg cursor-pointer"
             >

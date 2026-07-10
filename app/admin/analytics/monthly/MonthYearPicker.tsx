@@ -1,7 +1,13 @@
 "use client";
 import { useRouter } from 'next/navigation';
 
-export function MonthYearPicker({ selectedMonth }) {
+interface MonthYearPickerProps {
+  selectedMonth: string;
+}
+
+
+
+export function MonthYearPicker({ selectedMonth }: MonthYearPickerProps) {
   const router = useRouter();
   const [year, month] = selectedMonth.split('-');
 

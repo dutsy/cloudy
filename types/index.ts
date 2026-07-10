@@ -114,3 +114,15 @@ export type PaymentOrderClient = Order & {
   order_items: PaymentOrderItem[];
 };
 
+
+
+// 1. Pick exactly the columns your Supabase query returns
+export type MonthlyOrder = Pick<Order, 'id' | 'created_at' | 'daily_order_number' | 'total_amount'>;
+
+// 2. Define the exact shape of your function's return object
+export interface MonthlyData {
+  orders: MonthlyOrder[];
+  totalRevenue: number;
+  totalCount: number;
+}
+

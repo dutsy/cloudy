@@ -2,16 +2,12 @@
 
 import { useState, useRef } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
-import { ProductInsert } from "@/types";
 
 const CATEGORIES = [
   { value: "food", label: "🍔 Food" },
   { value: "drinks", label: "🥤 Drinks" },
   { value: "smoke", label: "💨 Shisha" },
 ];
-
-
-
 
 const generateSlug = (name: string) => {
   return name
@@ -25,6 +21,7 @@ export default function AddProductPage() {
   const formRef = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState<FileList | null>(null);
+  const [status, setStatus] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -88,9 +85,13 @@ export default function AddProductPage() {
       formRef.current.reset();
       setFiles(null);
       setFiles(null);
-    } catch (err: any) {
-      console.error("Submission Error:", err);
-      alert("Failed: " + (err.message || "Unknown error occurred"));
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setStatus(error.message);
+        console.error(status);
+      } else {
+        setStatus("Something went wrong.");
+      }
     } finally {
       setLoading(false);
     }

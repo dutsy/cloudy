@@ -1,7 +1,10 @@
 // app/admin/analytics/page.tsx
 import { getAnalytics } from "@/lib/orders-server";
 import Link from 'next/link';
-import { ArrowRight, Clock, Calendar, TrendingUp } from 'lucide-react'; // Added TrendingUp
+import { ArrowRight, Clock, TrendingUp } from 'lucide-react';
+
+type AnalyticsData = Awaited<ReturnType<typeof getAnalytics>>;
+
 export default async function AnalyticsPage() {
   const today = await getAnalytics('today');
   const week = await getAnalytics('week');
@@ -17,7 +20,7 @@ export default async function AnalyticsPage() {
         </Link>
       </div>
 
-      
+
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatCard title="Today" data={today} />
@@ -64,7 +67,7 @@ export default async function AnalyticsPage() {
   );
 }
 
-function StatCard({ title, data }) {
+function StatCard({ title, data }: { title: string; data: AnalyticsData }) {
   return (
     <div className="p-6 bg-card border rounded-2xl shadow-sm">
       <h3 className="text-muted-foreground font-bold">{title}</h3>

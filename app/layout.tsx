@@ -6,6 +6,7 @@ import { UserProvider } from "@/components/shared/user-context";
 import "@/assets/styles/globals.css";
 import { APP_DESCRIPTION, APP_NAME, SERVER_URL } from "@/lib/constants";
 import { ThemeProvider } from "next-themes";
+import { Analytics } from '@vercel/analytics/react';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +36,7 @@ export default function RootLayout({
           <UserProvider>
             <CartProvider>
               {children}
+              <Analytics />
               <Toaster position="top-center" richColors />
             </CartProvider>
           </UserProvider>

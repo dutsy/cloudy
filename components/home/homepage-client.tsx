@@ -27,6 +27,7 @@ const HomepageClient = ({ initialProducts }: HomepageClientProps) => {
   return (
     <div className="space-y-8 bg-background min-h-screen transition-colors duration-300">
       {/* Circle Selectors */}
+      <p>Sandbox Environment Active</p>
       <div className="flex justify-center gap-8 py-10">
         {categories.map((cat) => (
           <button

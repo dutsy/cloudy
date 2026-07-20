@@ -68,12 +68,13 @@ export type ProductWithOrderItem = OrderItem & {
   products: Product | null;
 };
 
+// types/index.ts
+
 export type KitchenItem = {
   id: string;
   quantity: number;
   note: string | null;
   created_at: string;
-
   products: {
     name: string;
     category: string;
@@ -82,7 +83,9 @@ export type KitchenItem = {
   orders: {
     table_number: string | null;
     daily_order_number: number | null;
-  };
+    // Add this line here
+    customer_name: string | null; 
+  } | null; // Make sure orders can be null if needed
 };
 
 export type PaymentOrder = Order & {

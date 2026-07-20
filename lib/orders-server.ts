@@ -97,7 +97,7 @@ export async function getActiveKitchenData(): Promise<KitchenItem[]> {
     .order("created_at", { ascending: true });
 
   if (error) throw error;
-  return data || [];
+  return (data as unknown as KitchenItem[]) ?? [];
 }
 
 // lib/orders-server.ts

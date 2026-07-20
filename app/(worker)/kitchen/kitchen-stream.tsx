@@ -126,6 +126,9 @@ export default function KitchenStream({ initialItems }: KitchenStreamProps) {
                     <span className="text-xs font-black uppercase text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-lg">
                       #{data.dailyNumber}
                     </span>
+                    <span className="text-xs font-black uppercase text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-lg">
+                      {data.items[0].orders?.customer_name || "Guest"}
+                    </span>
 
                     <span className="text-xs font-mono font-bold text-muted-foreground bg-muted px-2 py-1 rounded-md">
                       🕒 {orderTime}

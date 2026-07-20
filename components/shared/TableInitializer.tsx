@@ -6,7 +6,6 @@ import { setTableNumber } from "@/lib/storage";
 
 export default function TableInitializer() {
   const searchParams = useSearchParams();
-  const table = searchParams.get("table");
 
   useEffect(() => {
     const tableParam = searchParams.get("table");
@@ -16,5 +15,5 @@ export default function TableInitializer() {
     }
   }, [searchParams]);
 
-  return null; // This component doesn't render anything
+  return null;
 }

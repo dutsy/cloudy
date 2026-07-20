@@ -10,7 +10,8 @@ import type { KitchenItem,PaymentOrderClient } from "@/types";
 export async function placeOrder(
   tableNumber: string,
   formattedItems: Json[],
-  total: number
+  total: number,
+  customerName: string
 ) {
   const supabase = getSupabaseBrowserClient();
 
@@ -20,6 +21,7 @@ export async function placeOrder(
       p_table_number: tableNumber,
       p_items: formattedItems as Json,
       p_total_amount: total,
+      p_customer_name: customerName,
     }
   );
 
@@ -93,7 +95,8 @@ export async function getActiveKitchenData(): Promise<KitchenItem[]> {
       orders!inner(
         table_number,
         daily_order_number,
-        created_at
+        created_at,
+        customer_name
       )
     `)
     .eq("is_prepared", false)
@@ -104,7 +107,7 @@ export async function getActiveKitchenData(): Promise<KitchenItem[]> {
 
   if (error) throw error;
 
-  return data ?? [];
+  return (data as unknown as KitchenItem[]) ?? [];
 }
 
 
@@ -135,7 +138,7 @@ export async function getPendingKitchenItemsClient(): Promise<KitchenItem[]> {
 
   if (error) throw error;
 
-  return data ?? [];
+  return (data as unknown as KitchenItem[]) ?? [];
 }
 
 
@@ -168,7 +171,7 @@ export async function getPendingKitchenItems(): Promise<KitchenItem[]> {
 
   if (error) throw error;
 
-  return data ?? [];
+  return (data as unknown as KitchenItem[]) ?? [];
 }
 
 

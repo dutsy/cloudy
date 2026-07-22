@@ -59,23 +59,20 @@ export default function AddProductPage() {
       const generatedSlug = generateSlug(productName);
 
       // 5. Insert to DB
+      // 5. Insert to DB with correct explicit fields
       const { error: dbError } = await supabase.from("products").insert({
         name: String(formData.get("name") || ""),
+        name_ar: String(formData.get("name_ar") || ""),
         slug: generatedSlug,
         category: String(formData.get("category") || ""),
-        brand: String(formData.get("brand") || ""),
+        category_ar: String(formData.get("category_ar") || ""),
+        brand: String(formData.get("brand") || "Cloudy"),
+        brand_ar: String(formData.get("brand_ar") || ""),
         description: String(formData.get("description") || ""),
-
+        description_ar: String(formData.get("description_ar") || ""),
         price: Number(formData.get("price") || 0),
-
-        stock: 9999,
-
-        rating: Number(formData.get("rating") || 0),
-
-        num_reviews: 0,
-
+        stock: Number(formData.get("stock") || 0),
         images: imageUrls,
-
         avaliable: true,
       });
 

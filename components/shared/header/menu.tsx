@@ -1,7 +1,5 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
-import ModeToggle from "./mode-toggle";
 import Link from "next/link";
 import {
   EllipsisVertical,
@@ -36,7 +34,8 @@ const Menu = () => {
     <div className="flex justify-end gap-3">
       {/* DESKTOP NAVIGATION */}
       <nav className="hidden md:flex w-full max-w-xs gap-1 items-center">
-        <ModeToggle />
+        {/* <ModeToggle /> */}
+
 
         {/* ADMIN TAB */}
         {!loading && role === "admin" && (
@@ -57,7 +56,7 @@ const Menu = () => {
           <Button
             asChild
             variant="ghost"
-            className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+            className="text-blue-600 hover:text-emerald-700 hover:bg-emerald-50"
           >
             <Link href="/kitchen">
               <Soup className="mr-2 h-5 w-5" />
@@ -95,11 +94,7 @@ const Menu = () => {
           </SheetTrigger>
           <SheetContent className="flex flex-col items-start gap-4">
             <SheetTitle>Menu</SheetTitle>
-
-            <div className="flex items-center gap-2 w-full justify-between border-b pb-4">
-              <span className="text-sm font-medium">Theme</span>
-              <ModeToggle />
-            </div>
+            {/* <ModeToggle /> */}
 
             {/* Mobile Admin Link */}
             {!loading && role === "admin" && (
@@ -117,13 +112,14 @@ const Menu = () => {
 
             {/* Mobile Kitchen Link - Fixed to use '/kitchen' matching your folder tree */}
             {isStaff && (
+              
               <Button
                 asChild
                 variant="secondary"
-                className="w-full justify-start border-l-4 border-emerald-500 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                className="w-full justify-start border-l-4 border-emerald-500 bg-blue-600/5 hover:bg-blue-600/10 text-emerald-700 dark:text-emerald-400"
               >
                 <Link href="/kitchen">
-                  <Soup className="mr-2 h-5 w-5 text-emerald-500" />
+                  <Soup className="mr-2 h-5 w-5 text-blue-600" />
                   Kitchen View
                 </Link>
               </Button>

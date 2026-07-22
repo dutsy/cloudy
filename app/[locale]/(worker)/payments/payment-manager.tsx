@@ -30,16 +30,29 @@ export default function PaymentManager({ initialTables }: PaymentManagerProps) {
   }, []);
 
   const handleProcessPayment = async (order: PaymentOrderClient) => {
-    // 1. Mark as paid in DB
-    await markOrderAsPaid(order.id);
+    // OPTIMISTIC UPDATE: Instantly remove the table from the screen
+    setTables((currentTables) =>
+      currentTables.filter((t) => t.id !== order.id),
+    );
 
-    // 2. Set the data for the receipt template
-    setPrintingOrder(order);
+    try {
+      // 1. Mark as paid in DB quietly in the background
+      await markOrderAsPaid(order.id);
 
-    // 3. Trigger the print dialogue after render
-    setTimeout(() => {
-      reactToPrintFn();
-    }, 100);
+      // 2. Set the data for the receipt template
+      setPrintingOrder(order);
+
+      // 3. Trigger the print dialogue after render
+      setTimeout(() => {
+        reactToPrintFn();
+      }, 100);
+    } catch (error) {
+      console.error("Payment failed:", error);
+
+      // REVERT: If the database fails (e.g. internet drops), put the table back!
+      setTables((currentTables) => [...currentTables, order]);
+      // If you are using Sonner/Toast, this is a great place to show an error message.
+    }
   };
 
   // Real-time subscription

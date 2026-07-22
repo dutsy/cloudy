@@ -56,9 +56,12 @@ export default function KitchenStream({ initialItems }: KitchenStreamProps) {
     return () => unsubscribe();
   }, [fetchOrders]);
 
-  // Client Action handler for finishing an order
   const handleCompleteItem = async (itemId: string) => {
     setLoadingId(itemId);
+
+    setItems((currentItems) =>
+      currentItems.filter((item) => item.id !== itemId),
+    );
     try {
       await markItemAsPrepared(itemId);
     } catch (error) {
@@ -79,7 +82,7 @@ export default function KitchenStream({ initialItems }: KitchenStreamProps) {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto px-2 sm:px-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-emerald-500/10 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-blue-500/20 pb-5">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
             Cloudy Kitchen
@@ -89,10 +92,10 @@ export default function KitchenStream({ initialItems }: KitchenStreamProps) {
           </p>
         </div>
         <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
-          <Badge className="bg-emerald-500/5 text-emerald-600 animate-pulse">
+          <Badge className="bg-blue-600/5 text-blue-600 animate-pulse">
             Live Stream Active
           </Badge>
-          <div className="bg-emerald-500/10 text-emerald-600 font-extrabold px-3.5 py-1.5 rounded-xl text-xs sm:text-sm">
+          <div className="bg-blue-600/10 text-blue-600 font-extrabold px-3.5 py-1.5 rounded-xl text-xs sm:text-sm">
             {items.length} Open Tickets
           </div>
         </div>
@@ -120,13 +123,13 @@ export default function KitchenStream({ initialItems }: KitchenStreamProps) {
                   key={tableNum}
                   className="flex flex-col bg-card border-2 border-emerald-600/10 rounded-2xl shadow-sm overflow-hidden"
                 >
-                  <div className="p-4 bg-emerald-500/2 border-b border-muted flex justify-between items-center">
+                  <div className="p-4 bg-blue-600/2 border-b border-muted flex justify-between items-center">
                     <h4 className="text-2xl font-black">Table {tableNum}</h4>
 
-                    <span className="text-xs font-black uppercase text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-lg">
+                    <span className="text-xs font-black uppercase text-blue-600 bg-blue-600/10 px-2.5 py-1 rounded-lg">
                       #{data.dailyNumber}
                     </span>
-                    <span className="text-xs font-black uppercase text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-lg">
+                    <span className="text-xs font-black uppercase text-blue-600 bg-blue-600/10 px-2.5 py-1 rounded-lg">
                       {data.items[0].orders?.customer_name || "Guest"}
                     </span>
 
@@ -135,7 +138,7 @@ export default function KitchenStream({ initialItems }: KitchenStreamProps) {
                     </span>
                     <button
                       onClick={() => handleCompleteAll(data.items)}
-                      className="text-[10px] font-black uppercase text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-lg hover:bg-emerald-500/20"
+                      className="text-[10px] font-black uppercase text-blue-600 bg-blue-600/10 px-2.5 py-1 rounded-lg hover:bg-blue-600/20"
                     >
                       Mark All Ready ✓
                     </button>
@@ -164,7 +167,7 @@ export default function KitchenStream({ initialItems }: KitchenStreamProps) {
                             <button
                               disabled={loadingId === item.id}
                               onClick={() => handleCompleteItem(item.id)}
-                              className="bg-emerald-600 text-white font-black px-3 py-1 rounded-lg text-[10px] hover:bg-emerald-700 transition-colors disabled:opacity-50"
+                              className="bg-blue-900 text-white font-black px-3 py-1 rounded-lg text-[10px] hover:bg-blue-950 transition-colors disabled:opacity-50"
                             >
                               {loadingId === item.id ? "..." : "READY ✓"}
                             </button>

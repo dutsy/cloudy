@@ -175,12 +175,16 @@ export type Database = {
                     banner: string | null
                     brand: string
                     category: string
+                    category_ar?: string | null;
+                    brand_ar?: string | null;
                     created_at: string
                     description: string
+                    description_ar: string
                     id: string
                     images: string[]
                     is_featured: boolean | null
                     name: string
+                    name_ar: string
                     num_reviews: number
                     price: number
                     rating: number
@@ -193,11 +197,15 @@ export type Database = {
                     brand: string
                     category: string
                     created_at?: string
+                    category_ar?: string | null;
+                    brand_ar?: string | null;
                     description: string
+                    description_ar: string
                     id?: string
                     images: string[]
                     is_featured?: boolean | null
                     name: string
+                    name_ar: string
                     num_reviews?: number
                     price?: number
                     rating?: number
@@ -210,11 +218,15 @@ export type Database = {
                     brand?: string
                     category?: string
                     created_at?: string
+                    category_ar?: string | null;
+                    brand_ar?: string | null;
                     description?: string
+                    description_ar?: string
                     id?: string
                     images?: string[]
                     is_featured?: boolean | null
                     name?: string
+                    name_ar?: string
                     num_reviews?: number
                     price?: number
                     rating?: number
@@ -265,7 +277,7 @@ export type Database = {
         }
         Functions: {
             add_to_table_ticket: {
-                Args: { p_items: Json; p_table_number: string; p_total_amount: number; p_customer_name: string;}
+                Args: { p_items: Json; p_table_number: string; p_total_amount: number; p_customer_name: string; }
                 Returns: string
             }
         }

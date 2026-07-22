@@ -1,3 +1,5 @@
+'use client';
+
 import Header from '@/components/shared/header';
 import Footer from '@/components/footer';
 import TableInitializer from '@/components/shared/TableInitializer';

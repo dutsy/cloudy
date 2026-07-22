@@ -7,6 +7,7 @@ import Menu from "./menu";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/components/shared/cart-context";
 import { Button } from "@/components/ui/button";
+import { LanguageToggle } from "./language-toggle";
 
 const Header = () => {
   const { itemCount } = useCart();
@@ -34,19 +35,21 @@ const Header = () => {
           <Button
             asChild
             variant="ghost"
-            className="relative p-3 h-12 w-12 rounded-xl hover:bg-emerald-500/10"
+            className="relative p-3 h-12 w-12 rounded-xl hover:bg-blue-600/10"
           >
             <Link href="/cart">
               {/* Icon increased to h-8 w-8 */}
               <ShoppingCart className="h-8 w-8 text-foreground" />
 
               {itemCount > 0 && (
-                <span className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-black text-white shadow-md border-2 border-background">
+                <span className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-900 text-[11px] font-black text-white shadow-md border-2 border-background">
                   {itemCount}
                 </span>
               )}
             </Link>
           </Button>
+
+          <LanguageToggle />
 
           {/* MENU COMPONENT */}
           <Menu />

@@ -9,8 +9,6 @@ export type {
 import type { Tables, TablesInsert, TablesUpdate } from "./supabase";
 
 
-
-
 // Products
 export type Product = Tables<"products">;
 export type ProductInsert = TablesInsert<"products">;

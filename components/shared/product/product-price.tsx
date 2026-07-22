@@ -1,16 +1,22 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 
-const ProductPrice = ({value, className}: {value: number; className?: string;}) => {
-
-    const stringValue = value.toFixed(2);
-    const [intValue, floatValue] = stringValue.split('.')
-
-    return ( <p className={cn('text-2xl' , className)}>
-        <span className="text-xs algin-super">&#8362;</span>
-        {intValue}
-        <span className="text-xs algin-super">{floatValue}</span>
-     </p>
-    );
+interface ProductPriceProps {
+  value: number;
+  className?: string;
 }
- 
+
+const ProductPrice = ({ value, className }: ProductPriceProps) => {
+  // Math.round() removes the decimals completely (e.g., 15.00 becomes 15)
+  // If you always want to round down, you can use Math.floor(value) instead.
+  const roundedValue = Math.round(value);
+
+  return (
+    <div className={cn("flex items-center", className)}>
+      <span className="font-bold">&#8362;{roundedValue}</span>
+    </div>
+  );
+};
+
 export default ProductPrice;

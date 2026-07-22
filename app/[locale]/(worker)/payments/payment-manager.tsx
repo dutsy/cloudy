@@ -44,7 +44,7 @@ export default function PaymentManager({ initialTables }: PaymentManagerProps) {
 
       // 3. Trigger the print dialogue after render
       setTimeout(() => {
-        reactToPrintFn();
+        //reactToPrintFn();
       }, 100);
     } catch (error) {
       console.error("Payment failed:", error);

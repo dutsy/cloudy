@@ -39,8 +39,8 @@ const Footer = () => {
               <Clock className="w-4 h-4 text-blue-600 shrink-0" />
               <span>
                 {isArabic 
-                  ? "مفتوح يومياً: 7:00 صباحاً - 10:00 مساءً" 
-                  : "Open Daily: 7:00 AM - 10:00 PM"}
+                  ? "مفتوح يومياً: 12:00 صباحاً - 12:00 مساءً" 
+                  : "Open Daily: 12:00 AM - 12:00 PM"}
               </span>
             </div>
           </div>

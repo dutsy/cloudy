@@ -58,8 +58,7 @@ export default function AddProductPage() {
 
       const generatedSlug = generateSlug(productName);
 
-      // 5. Insert to DB
-      // 5. Insert to DB with correct explicit fields
+      // 4. Insert to DB with correct explicit fields
       const { error: dbError } = await supabase.from("products").insert({
         name: String(formData.get("name") || ""),
         name_ar: String(formData.get("name_ar") || ""),
@@ -71,7 +70,7 @@ export default function AddProductPage() {
         description: String(formData.get("description") || ""),
         description_ar: String(formData.get("description_ar") || ""),
         price: Number(formData.get("price") || 0),
-        stock: Number(formData.get("stock") || 0),
+        stock: Number(formData.get("stock") || 999999),
         images: imageUrls,
         avaliable: true,
       });
@@ -81,11 +80,10 @@ export default function AddProductPage() {
       alert("Product added successfully!");
       formRef.current.reset();
       setFiles(null);
-      setFiles(null);
     } catch (error: unknown) {
       if (error instanceof Error) {
         setStatus(error.message);
-        console.error(status);
+        console.error(error.message);
       } else {
         setStatus("Something went wrong.");
       }
@@ -97,38 +95,52 @@ export default function AddProductPage() {
   return (
     <div className="flex justify-center w-full">
       <div className="w-full max-w-2xl">
-        {" "}
-        {/* This 'max-w-2xl' restricts the width */}
         <form
           ref={formRef}
           onSubmit={handleSubmit}
           className="space-y-6 bg-white p-8 rounded-xl shadow-sm border border-gray-100"
         >
           <h2 className="text-2xl font-bold text-gray-800">Add New Product</h2>
+          
           <div className="space-y-4">
-            {/* Full width always */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Product Name
-              </label>
-              <input
-                name="name"
-                placeholder="e.g. Double Cheeseburger"
-                required
-                className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
-              />
-            </div>
-
-            {/* Grid: 1 column on mobile (default), 2 columns on small screens (sm:) and up */}
+            
+            {/* English & Arabic Product Name */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Category
+                  Product Name (EN)
+                </label>
+                <input
+                  name="name"
+                  placeholder="e.g. Double Cheeseburger"
+                  required
+                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Product Name (AR) 🇦🇪
+                </label>
+                <input
+                  name="name_ar"
+                  dir="rtl"
+                  placeholder="مثال: تشيز برجر مزدوج"
+                  required
+                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Category & Category Arabic Selection */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Category (EN)
                 </label>
                 <select
                   name="category"
                   required
-                  className="w-full border-gray-300 border p-3 rounded-lg bg-white focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="w-full border-gray-300 border p-3 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none"
                 >
                   {CATEGORIES.map((cat) => (
                     <option key={cat.value} value={cat.value}>
@@ -139,30 +151,74 @@ export default function AddProductPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Brand
+                  Category Arabic Label (Optional)
                 </label>
                 <input
-                  name="brand"
-                  placeholder="e.g. McDonald's"
-                  required
-                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                  name="category_ar"
+                  dir="rtl"
+                  placeholder="مثال: طعام، مشروبات، شيشة"
+                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description
-              </label>
-              <textarea
-                name="description"
-                rows={3}
-                placeholder="Briefly describe the product..."
-                required
-                className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
-              />
+            {/* Brand & Brand Arabic */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Brand
+                </label>
+                <input
+                  name="brand"
+                  placeholder="e.g. Cloudy"
+                  required
+                  defaultValue="Cloudy"
+                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Brand (AR)
+                </label>
+                <input
+                  name="brand_ar"
+                  dir="rtl"
+                  placeholder="كلاودي"
+                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
             </div>
 
+            {/* Description (EN & AR) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description (EN)
+                </label>
+                <textarea
+                  name="description"
+                  rows={3}
+                  placeholder="Briefly describe the product..."
+                  required
+                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description (AR) 🇦🇪
+                </label>
+                <textarea
+                  name="description_ar"
+                  rows={3}
+                  dir="rtl"
+                  placeholder="صف المنتج باختصار..."
+                  required
+                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                />
+              </div>
+            </div>
+
+            {/* Price & Stock */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -174,25 +230,25 @@ export default function AddProductPage() {
                   step="0.01"
                   placeholder="0.00"
                   required
-                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Initial Rating
+                  Stock / Quantity
                 </label>
                 <input
-                  name="rating"
+                  name="stock"
                   type="number"
-                  step="0.1"
-                  min="0"
-                  max="5"
-                  placeholder="4.5"
-                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                  placeholder="999999"
+                  defaultValue="999999"
+                  required
+                  className="w-full border-gray-300 border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
             </div>
 
+            {/* Product Image */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Product Image
@@ -201,7 +257,7 @@ export default function AddProductPage() {
                 <input
                   type="file"
                   onChange={(e) => setFiles(e.target.files)}
-                  className="text-sm text-gray-500 w-full"
+                  className="text-sm text-gray-500 w-full cursor-pointer"
                 />
               </div>
             </div>
@@ -210,7 +266,7 @@ export default function AddProductPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 text-white p-4 rounded-lg font-bold transition-all disabled:opacity-50 shadow-md"
+            className="w-full mt-6 bg-blue-900 hover:bg-blue-800 text-white p-4 rounded-lg font-bold transition-all disabled:opacity-50 shadow-md cursor-pointer"
           >
             {loading ? "Adding Product..." : "Add Product to Menu"}
           </button>

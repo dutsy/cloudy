@@ -40,7 +40,7 @@ export default function PaymentManager({ initialTables }: PaymentManagerProps) {
       await markOrderAsPaid(order.id);
 
       // 2. Set the data for the receipt template
-      setPrintingOrder(order);
+      //setPrintingOrder(order);
 
       // 3. Trigger the print dialogue after render
       setTimeout(() => {

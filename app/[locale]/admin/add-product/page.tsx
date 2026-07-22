@@ -84,6 +84,7 @@ export default function AddProductPage() {
       if (error instanceof Error) {
         setStatus(error.message);
         console.error(error.message);
+        console.log(status);
       } else {
         setStatus("Something went wrong.");
       }

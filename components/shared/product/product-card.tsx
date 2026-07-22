@@ -73,10 +73,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <Card className="p-0 group w-full max-w-sm border border-muted bg-card shadow-sm hover:shadow-md transition-all duration-200 rounded-2xl overflow-hidden flex flex-col justify-between">
-      {/* 2. REMOVE `items-center` and ADD `w-full m-0` to the image wrapper */}
-      <div className="relative w-full m-0 p-0 overflow-hidden bg-muted/30 aspect-square">
+      <div className="relative w-full m-0 p-0 overflow-hidden bg-white aspect-2/3 sm:aspect-3/4">
         <Image
-          src={product.images[0] || PRODUCT_PLACEHOLDER}
+          src={product.images?.[0] || PRODUCT_PLACEHOLDER}
           alt={displayName}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -84,7 +83,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           priority={true}
         />
 
-        {/* Subtle Category/Brand Tag over the image container */}
+        {/* Subtle Category/Brand Tag */}
         <span className="absolute top-3 left-3 bg-background/80 backdrop-blur-md text-[10px] font-black tracking-wider uppercase px-2.5 py-1 rounded-full text-muted-foreground border">
           {displayBrand || displayCategory}
         </span>
@@ -130,7 +129,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
               </Button>
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-106.25 rounded-2xl">
+            <DialogContent
+              className="sm:max-w-106.25 rounded-2xl"
+              onOpenAutoFocus={(e) => e.preventDefault()}
+            >
               <DialogHeader>
                 <DialogTitle className="text-xl font-black text-foreground tracking-tight">
                   {isArabic ? "تخصيص طلبك" : "Customize Your Order"}
